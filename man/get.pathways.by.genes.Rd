@@ -48,12 +48,11 @@ get.pathways.by.reactions(reaction.id.list)
   \code{\link{get.compounds.by.pathway}},
   \code{\link{get.reactions.by.pathway}}} 
 \examples{
-        # There seems to be some problem at the server side. Use try
-        pathways <- try(get.pathways.by.genes(c("eco:b0077", "eco:b0078")))
-        pathways <- try(get.pathways.by.enzymes("ec:1.3.99.1"))
-        pathways <- try(get.pathways.by.compounds(c("cpd:C00033", "cpd:C00158"))) 
-        pathways <- try(get.pathways.by.reactions(c("rn:R00959",
-                                 "rn:R02740", "rn:R00960", "rn:R01786")))
+        pathways <- get.pathways.by.genes(c("eco:b0077", "eco:b0078"))
+        pathways <- get.pathways.by.enzymes("ec:1.3.99.1")
+        pathways <- get.pathways.by.compounds(c("cpd:C00033", "cpd:C00158")))
+        pathways <- get.pathways.by.reactions(c("rn:R00959",
+                                 "rn:R02740", "rn:R00960", "rn:R01786"))
 }
 \keyword{ datasets }
 

@@ -74,27 +74,69 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
 
 .printf <- function(...) message(noquote(sprintf(...)))
 
-.get.x <- function(x, arg)
+
+.getUrl <- function(url, parser, ...)
 {
-    url <- sprintf("%s/link/%s/%s", .getRootUrl(), x, arg)
+    .printf("url == %s", url) ## for debugging, remove this later
     response <- GET(url)
     result <- http_status(response)
     if (!result$category == "success")
         stop(sprintf("Invalid request, server returned %s. (%s)",
             result$message, url))
-    .parse(content(response, "text"))
+    content <- gsub("^\\s+|\\s+$", "", content(response, "text"))
+    if (nchar(content) == 0)
+        stop("Empty response from server.")
+    do.call(parser, list(content, ...))
+}
+
+.get.x <- function(x, arg)
+{
+    if (length(arg) > 1)
+        arg <- paste(arg, collapse="+")
+    url <- sprintf("%s/link/%s/%s", .getRootUrl(), x, arg)
+    .getUrl(url, .link.parser)
+}
+
+.list <- function(arg, ...)
+{
+    url <- sprintf("%s/list/%s", .getRootUrl(), arg)
+    .getUrl(url, .list.parser, ...)
 }
 
 
-.parse <- function(txt)
+.find <- function(database, arg)
 {
-    lines <- strsplit(txt, "\n")
+    url <- sprintf("%s/find/%s/%s", .getRootUrl(), database, arg)
+    .getUrl(url, .list.parser, valueColumn=1)
+}
+
+.link.parser <- function(txt)
+{
+    lines <- strsplit(txt, "\n")[[1]]
     ret <- character()
-    for (line in lines[[1]])
+    for (line in lines)
     {
       ret <- c(ret, strsplit(line, "\t")[[1]][2])
     }
     paste(ret, collapse="\n")
+    ret
+}
+
+.list.parser <- function(txt, nameColumn, valueColumn)
+{
+    lines <- strsplit(txt, "\n")[[1]]
+    ret <- character()
+    nms <- character()
+    for (line in lines)
+    {
+        segs <- strsplit(line, "\t")[[1]]
+        ret <- c(ret, segs[valueColumn])
+        if (!missing(nameColumn))
+            nms <- c(nms, segs[nameColumn])
+    }
+    paste(ret, collapse="\n")
+    if (!missing(nameColumn))
+        names(ret) <- nms
     ret
 }
 
@@ -103,35 +145,21 @@ get.genes.by.pathway <- function(pathway.id) {
 }
 
 
-OLDget.genes.by.pathway <- function(pathway.id) {
-    unlist(.SOAP(KEGGserver, "get_genes_by_pathway",
-                 .soapArgs=list('pathway_id' = pathway.id), action=KEGGaction,
-                 xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
-}
-
-
-OLDget.genes.by.pathway <- function(pathway.id) {
-    unlist(.SOAP(KEGGserver, "get_genes_by_pathway",
-                 .soapArgs=list('pathway_id' = pathway.id), action=KEGGaction,
-                 xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
-}
-
 get.enzymes.by.pathway <- function(pathway.id){
-    unlist(.SOAP(KEGGserver, "get_enzymes_by_pathway",
-                 .soapArgs=list('pathway_id' = pathway.id), action=KEGGaction,
-                 xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    ## maybe hsa:10458 is a better example than path:eco00020
+    .get.x("pathway", pathway.id)
 }
+
+
 
 get.compounds.by.pathway <- function(pathway.id){
-    unlist(.SOAP(KEGGserver, "get_compounds_by_pathway",
-                 .soapArgs=list('pathway_id' = pathway.id), action=KEGGaction,
-                 xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    # example: path:map00010
+    .get.x("compound", pathway.id)
 }
 
 get.reactions.by.pathway <- function(pathway.id){
-    unlist(.SOAP(KEGGserver, "get_reactions_by_pathway",
-                        .soapArgs=list('pathway_id' = pathway.id), action=KEGGaction,
-                        xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    # example: path:map00010
+    .get.x("reaction", pathway.id)
 }
 
 
@@ -163,36 +191,36 @@ get.genes.by.motifs <- function(motif.id.list, start, max.results){
 }
 
 list.databases <- function(){
-  dbs <- .SOAP(KEGGserver, "list_databases", "",
-               action = KEGGaction,
-               xmlns = KEGGxmlns,
-               nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-  extractFromDefinitions(dbs)
+  ## There does not seem to be an equivalent call in the REST API.
+  ## There is this list of databases in the documentation:
+  ##   <database> = pathway | brite | module | disease | drug | environ | ko | genome |
+  ##              <org> | compound | glycan | reaction | rpair | rclass | enzyme |
+  ##              organism
+  ## <org> = KEGG organism code or T number
+  ## So, either return that, or don't implement this function.
+
 }
 
 list.organisms <- function(){
-  orgs <- .SOAP(KEGGserver, "list_organisms", "",
-                action = KEGGaction, xmlns = KEGGxmlns,
-                nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-  extractFromDefinitions(orgs)
+    .list("organism", nameColumn=3, valueColumn=2)
 }
 
 list.pathways <- function(org){
-  paths <- .SOAP(KEGGserver, "list_pathways",
-                 .soapArgs=list(org = org), action = KEGGaction,
-                 xmlns = KEGGxmlns,
-                 nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-  extractFromDefinitions(paths)
+  .list("pathway", nameColumn=2, valueColumn=1)
 }
 
 
 
 get.genes.by.organism <- function(org, start, max.results){
-    unlist(.SOAP(KEGGserver, "get_genes_by_organism",
-                        .soapArgs=list(org = org,
-          start = start, 'max_results' = max.results),
-          action = KEGGaction, xmlns = KEGGxmlns,
-                        nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    ## Not sure if it is worth implementing the start and max.results
+    ## arguments as they were originally intended to limit the size of
+    ## what comes back from the server, but it looks like we
+    ## can't do that with the REST API (unless there is some
+    ## HTTP trickery that would allow it), so there seems little
+    ## point in trimming what's returned after the fact. The
+    ## user can do that just as easily as we can. So I'm removing
+    ## those arguments. FIXME
+    .list(org, valueColumn=1)
 }
 
 
@@ -223,54 +251,32 @@ color.pathway.by.objects <- function(pathway.id, object.id.list,
 ## NOTE: get.pathways.by.genes() just gives the intersection of the pathways
 ## based on the genes passed in..
 get.pathways.by.genes <- function(genes.id.list){
-  f = KEGGIFace@functions[["get_pathways_by_genes"]]
-  unlist(.SOAP(KEGGserver, "get_pathways_by_genes",
-                 .soapArgs=list('genes_id_list' = genes.id.list),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns),
-                 .types = environment(f)$.operation@parameters ))
+    .get.x("pathway", genes.id.list)
 }
 
 get.pathways.by.enzymes <- function(enzyme.id.list){
-  f = KEGGIFace@functions[["get_pathways_by_enzymes"]]
-  unlist(.SOAP(KEGGserver, "get_pathways_by_enzymes",
-                 .soapArgs=list('enzymes_id_list' = enzyme.id.list),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns),
-                 .types = environment(f)$.operation@parameters ))
+    .get.x("pathway", enzyme.id.list)
 }
 
 get.pathways.by.compounds <- function(compound.id.list){
-  f = KEGGIFace@functions[["get_pathways_by_compounds"]]
-  unlist(.SOAP(KEGGserver, "get_pathways_by_compounds",
-                 .soapArgs=list('compounds_id_list' = compound.id.list),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns),
-                 .types = environment(f)$.operation@parameters ))
+    .get.x("pathway", compound.id.list)
 }
 
 get.pathways.by.reactions <- function(reaction.id.list){
-  f = KEGGIFace@functions[["get_pathways_by_reactions"]]
-  unlist(.SOAP(KEGGserver, "get_pathways_by_reactions",
-                 .soapArgs=list('reactions_id_list' = reaction.id.list),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns),
-                 .types = environment(f)$.operation@parameters ))
+    .get.x("pathway", reaction.id.list)
 }
 
 
 search.compounds.by.name <- function(name){
-    unlist(.SOAP(KEGGserver, "search_compounds_by_name",
-                 .soapArgs=list('name' = name),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    .find("compound", name)
 }
 
 search.glycans.by.name <- function(name){
-    unlist(.SOAP(KEGGserver, "search_glycans_by_name",
-                 .soapArgs=list('name' = name),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    .find("glycan", name)
 }
 
 search.compounds.by.composition <- function(composition){
-    unlist(.SOAP(KEGGserver, "search_compounds_by_composition",
-                 .soapArgs=list('composition' = composition),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    .find("compound", sprintf("%s/formula", composition))
 }
 
 search.glycans.by.composition <- function(composition){

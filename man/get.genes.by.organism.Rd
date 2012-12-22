@@ -8,7 +8,7 @@
   database for all the genes of the organism
 }
 \usage{
-get.genes.by.organism(org, start, max.results)
+get.genes.by.organism(org)
 }
 
 \arguments{
@@ -17,12 +17,6 @@ get.genes.by.organism(org, start, max.results)
     first letter being the first letter of the genus name and the rest
     being the first two letters of the species name of the scientic name
     of the organism of concern}
-  \item{start}{\code{start} an integer to indicate the location of the
-    entry in the query results from which the results will be
-    extracted and returned}
-  \item{max.results}{\code{max.results} an integer to indicate the
-    maximum number of entries that will be extracted from the query
-    results and returned}
 }
 \details{
   The gene ids returned by the query normally consist of three letters
@@ -39,7 +33,7 @@ get.genes.by.organism(org, start, max.results)
 \author{Jianhua Zhang}
 
 \examples{
-        genes <- get.genes.by.organism("hsa", 1, 10)
+        genes <- get.genes.by.organism("hsa")
 }
 \keyword{ datasets }
 
