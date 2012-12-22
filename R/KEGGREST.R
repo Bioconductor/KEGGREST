@@ -77,6 +77,7 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
 
 .getUrl <- function(url, parser, ...)
 {
+     url <- gsub(" ", "%20", url, fixed=TRUE)
     .printf("url == %s", url) ## for debugging, remove this later
     response <- GET(url)
     result <- http_status(response)
@@ -280,15 +281,17 @@ search.compounds.by.composition <- function(composition){
 }
 
 search.glycans.by.composition <- function(composition){
-    unlist(.SOAP(KEGGserver, "search_glycans_by_composition",
-                 .soapArgs=list('composition' = composition),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    .find("glycan", composition)
 }
 
-search.compounds.by.mass <- function(mass, range){
-    unlist(.SOAP(KEGGserver, "search_compounds_by_mass",
-                 .soapArgs=list('mass' = mass, 'range' = range),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+search.compounds.by.mass <- function(mass){
+    ## range argument goes away, because docs say:
+    ## "The exact mass (or molecular weight) is checked by
+    ## rounding off to the same decimal place as the query data."
+    ## example: /find/compound/174.05/exact_mass  
+    ## for 174.045 =< exact mass < 174.055
+    ## FIXME - update man page to reflect above
+    .find("compound", sprintf("%s/exact_mass/", mass))
 }
 
 search.glycans.by.mass <- function(mass, range){
