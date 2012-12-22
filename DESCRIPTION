@@ -1,0 +1,15 @@
+Package: KEGGREST
+Version: 0.99.0
+Title: Client-side REST access KEGG
+Author: Dan Tenenbaum
+Depends: methods, BiocGenerics, httr
+Imports:
+Suggests: RUnit
+LazyLoad: yes
+Maintainer: Bioconductor Package Maintainer
+        <maintainer@bioconductor.org>
+Description: A package that provides a client interface to the KEGG
+        SOAP server
+biocViews: Annotation, Pathways, ConnectTools
+License: Artistic-2.0
+Packaged: 2012-12-21 23:58:02 UTC; dtenenba
