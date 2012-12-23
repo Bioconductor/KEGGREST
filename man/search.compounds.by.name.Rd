@@ -26,8 +26,6 @@ search.compounds.by.subcomp(mol, offset, limit)
     a compound composition, usually expressed as chemical formula} 
   \item{mass}{\code{mass}a float to indicate a molecular weight
     around mass}
-  \item{range}{\code{range} a float to indicate the range of molecular
-    weight when searching compounds by mass}
   \item{mol}{\code{mol}a character string to indicate a MOL formatted
     structural data, more in details section}  
   \item{offset}{\code{offset} an integer}
@@ -43,7 +41,9 @@ search.compounds.by.subcomp(mol, offset, limit)
 
   \code{search.compounds.by.mass} returns
   a list of compounds having the molecular weight around "mass" with
-  some ambiguity (range); 
+  some ambiguity; the exact mass (or molecular weight) is checked by
+  rounding off to the same decimal place as \code{mass}, so a \code{mass}
+  of 174.05 would find matches between 174.045 and 174.055 (inclusive).
 
   \code{search.compounds.by.subcomp} returns
   a list of compounds with the alignment having common sub-structure

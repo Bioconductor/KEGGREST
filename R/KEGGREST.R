@@ -71,18 +71,21 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
 }
 ## library(KEGGSOAP); paraGenes <- get.paralogs.by.gene("eco:b0002", 1, 10)
 
-.get.x.by.y <- function(x, y, arg)
-{
-#  url <- sprintf("%s/link/%s/%s/"
-}
 
 .printf <- function(...) message(noquote(sprintf(...)))
 
 
-.getUrl <- function(url, parser, ...)
+.cleanUrl <- function(url)
 {
      url <- gsub(" ", "%20", url, fixed=TRUE)
      url <- gsub("#", "%23", url, fixed=TRUE)
+     url <- gsub(":", "%3a", url, fixed=TRUE)
+     sub("http%3a//", "http://", url, fixed=TRUE)
+}
+
+.getUrl <- function(url, parser, ...)
+{
+    url <- .cleanUrl(url)
     .printf("url == %s", url) ## for debugging, remove this later
     response <- GET(url)
     result <- http_status(response)
@@ -159,7 +162,7 @@ get.enzymes.by.pathway <- function(pathway.id){
 
 
 get.compounds.by.pathway <- function(pathway.id){
-    # example: path:map00010
+    ## example: path:map00010
     .get.x("compound", pathway.id)
 }
 
@@ -197,14 +200,13 @@ get.genes.by.motifs <- function(motif.id.list, start, max.results){
 }
 
 list.databases <- function(){
-  ## There does not seem to be an equivalent call in the REST API.
-  ## There is this list of databases in the documentation:
-  ##   <database> = pathway | brite | module | disease | drug | environ | ko | genome |
-  ##              <org> | compound | glycan | reaction | rpair | rclass | enzyme |
-  ##              organism
-  ## <org> = KEGG organism code or T number
-  ## So, either return that, or don't implement this function.
-
+    ## There does not seem to be an equivalent call in the REST API.
+    ## There is this list of databases in the documentation:
+    ##   <database> = pathway | brite | module | disease | drug | environ | ko | genome |
+    ##              <org> | compound | glycan | reaction | rpair | rclass | enzyme |
+    ##              organism
+    ## <org> = KEGG organism code or T number
+    ## So, either return that, or don't implement this function.
 }
 
 list.organisms <- function(){
@@ -225,22 +227,39 @@ get.genes.by.organism <- function(org, start, max.results){
     ## HTTP trickery that would allow it), so there seems little
     ## point in trimming what's returned after the fact. The
     ## user can do that just as easily as we can. So I'm removing
-    ## those arguments. FIXME
+    ## those arguments.
     .list(org, valueColumn=1)
 }
 
 
-## single args with ""
+.get.tmp.url <- function(url, use.httr=TRUE)
+{
+    if (use.httr)
+    {
+        content <- content(GET(url), type="text")
+        lines <- strsplit(content, "\n", fixed=TRUE)[[1]]
+
+    } else { ## https://github.com/hadley/httr/issues/27
+        t <- tempfile()
+        download.file(url, t, quiet=TRUE)
+        lines <- readLines(t)
+    }
+    urlLine <- grep("<img src=\"/tmp", lines, value=T)
+    path <- strsplit(urlLine, '"', fixed=TRUE)[[1]][2]
+    sprintf("http://www.kegg.jp%s", path)
+}
+
+
 mark.pathway.by.objects <- function(pathway.id, object.id.list){
-  ## example: http://www.kegg.jp/pathway/eco00260+b0002+c00263
-  ## strip prefixes
-  f = KEGGIFace@functions[["mark_pathway_by_objects"]]  
-    .SOAP(KEGGserver, "mark_pathway_by_objects",
-                 .soapArgs = list('pathway_id' = pathway.id,
-                                  'object_id_list' = object.id.list),
-                 action = KEGGaction, xmlns = KEGGxmlns,
-                 nameSpaces = SOAPNameSpaces(version=KEGGsoapns),
-          .types = environment(f)$.operation@parameters )
+    ## example: http://www.kegg.jp/pathway/eco00260+b0002+c00263
+    pathway.id <- sub("^path:", "", pathway.id)
+    if (!missing(object.id.list))
+    {
+        object.id.list <- paste(object.id.list, collapse="+")
+        pathway.id <- sprintf("%s+%s", pathway.id, object.id.list)
+    }
+    url <- sprintf("http://www.kegg.jp/pathway/%s", pathway.id)
+    .get.tmp.url(url)
 }
 
 color.pathway.by.objects <- function(pathway.id, object.id.list,
@@ -250,15 +269,25 @@ color.pathway.by.objects <- function(pathway.id, object.id.list,
     ## (but don't include path: in pathway id)
     ## documentation here: http://www.kegg.jp/kegg/rest/weblink.html
     ## and here: http://www.kegg.jp/kegg/tool/map_pathway2.html
-  f = KEGGIFace@functions[["color_pathway_by_objects"]]
-  .SOAP(KEGGserver, "color_pathway_by_objects",
-                        .soapArgs=list('pathway_id' = pathway.id,
-                             'object_id_list' = object.id.list,
-                             'fg_color_list' = fg.color.list,
-                             'bg_color_list' = bg.color.list),
-                  action = KEGGaction, xmlns = KEGGxmlns,
-                  nameSpaces = SOAPNameSpaces(version=KEGGsoapns),
-          .types = environment(f)$.operation@parameters )
+    pathway.id <- sub("^path:", "", pathway.id)
+    if (!(length(object.id.list)==length(fg.color.list) &&
+        length(fg.color.list) == length(bg.color.list)))
+    {
+        stop(paste("object.id.list, fg.color.list, and bg.color.list must",
+            "all be the same length."))
+    }
+    url <- sprintf("http://www.kegg.jp/kegg-bin/show_pathway?%s/", pathway.id)
+    segs <- character(0)
+    for (i in 1:length(object.id.list))
+    {
+        segs <- c(segs, sprintf("%s%%09%s,%s",
+            object.id.list[i],
+            fg.color.list[i],
+            bg.color.list[i]))
+    }
+    url <- sprintf("%s%s", url, paste(segs, collapse="/"))
+    url <- .cleanUrl(url)
+    .get.tmp.url(url, use.httr=FALSE)
 }
 
 ## NOTE: get.pathways.by.genes() just gives the intersection of the pathways
@@ -302,7 +331,6 @@ search.compounds.by.mass <- function(mass){
     ## rounding off to the same decimal place as the query data."
     ## example: /find/compound/174.05/exact_mass  
     ## for 174.045 =< exact mass < 174.055
-    ## FIXME - update man page to reflect above
     .find("compound", sprintf("%s/exact_mass/", mass))
 }
 

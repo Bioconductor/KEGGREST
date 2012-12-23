@@ -1,4 +1,8 @@
 
+importFrom(httr, GET, http_status, content)
+
+importFrom(methods, slot, slotNames)
+
 export(color.pathway.by.objects,
        get.best.best.neighbors.by.gene,
        getBestNeighbors,
