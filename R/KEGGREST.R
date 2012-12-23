@@ -23,6 +23,10 @@ extractFromNamedListObjs <- function(x){
   lapply(x, extractFromNamedListObj)
 }
 
+## for best neighbors, investigate: 
+## http://www.kegg.jp/pathway/eco00260+b0002+c00263
+## referenced at http://www.kegg.jp/kegg/rest/weblink.html
+
 get.best.neighbors.by.gene <- function(genes.id, start, max.results){
     getBestNeighbors(genes.id, start, max.results, "best")
 }
@@ -78,6 +82,7 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
 .getUrl <- function(url, parser, ...)
 {
      url <- gsub(" ", "%20", url, fixed=TRUE)
+     url <- gsub("#", "%23", url, fixed=TRUE)
     .printf("url == %s", url) ## for debugging, remove this later
     response <- GET(url)
     result <- http_status(response)
@@ -86,7 +91,7 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
             result$message, url))
     content <- gsub("^\\s+|\\s+$", "", content(response, "text"))
     if (nchar(content) == 0)
-        stop("Empty response from server.")
+        return(character(0))
     do.call(parser, list(content, ...))
 }
 
@@ -227,6 +232,8 @@ get.genes.by.organism <- function(org, start, max.results){
 
 ## single args with ""
 mark.pathway.by.objects <- function(pathway.id, object.id.list){
+  ## example: http://www.kegg.jp/pathway/eco00260+b0002+c00263
+  ## strip prefixes
   f = KEGGIFace@functions[["mark_pathway_by_objects"]]  
     .SOAP(KEGGserver, "mark_pathway_by_objects",
                  .soapArgs = list('pathway_id' = pathway.id,
@@ -238,6 +245,11 @@ mark.pathway.by.objects <- function(pathway.id, object.id.list){
 
 color.pathway.by.objects <- function(pathway.id, object.id.list,
                                      fg.color.list, bg.color.list){
+    ## example: http://www.kegg.jp/kegg-bin/show_pathway?eco00260/b0002%09%23ff0000,%2300ff00/c00263%09%23ffff00,yellow
+    ## also works to include organism code in gene IDs
+    ## (but don't include path: in pathway id)
+    ## documentation here: http://www.kegg.jp/kegg/rest/weblink.html
+    ## and here: http://www.kegg.jp/kegg/tool/map_pathway2.html
   f = KEGGIFace@functions[["color_pathway_by_objects"]]
   .SOAP(KEGGserver, "color_pathway_by_objects",
                         .soapArgs=list('pathway_id' = pathway.id,
@@ -355,10 +367,7 @@ bconv <- function(id.list){
 ## Support was requested for kegg orthology "ko" numbers.
 
 get.ko.by.gene <- function(genes.id) {
-    unlist(.SOAP(KEGGserver, "get_ko_by_gene",
-                 .soapArgs=list('genes_id' = genes.id),
-                 action=KEGGaction, xmlns = KEGGxmlns,
-                 nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    .get.x("ko", genes.id)
 }
 
 
@@ -388,6 +397,8 @@ get.genes.by.ko.class <- function(ko.class.id, org, offset, limit){
 }
 
 get.genes.by.ko  <- function(ko.id, org){
+    ## how to filter by org?
+    ## also, need long name
     res<-unlist(.SOAP(KEGGserver, "get_genes_by_ko",
                       .soapArgs=list('ko_id'=ko.id, org=org),
                       action = KEGGaction, xmlns = KEGGxmlns,
@@ -398,13 +409,13 @@ get.genes.by.ko  <- function(ko.id, org){
 }
                       
 get.kos.by.pathway <- function(pathway.id) {
-    unlist(.SOAP(KEGGserver, "get_kos_by_pathway",
-                 .soapArgs=list('pathway_id' = pathway.id),
-                 action=KEGGaction, xmlns = KEGGxmlns,
-                 nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    ## example returns nothing in rest and python, but returns 36 kos in KEGGSOAP...???
+    .get.x("ko", pathway.id)
 }
 
 get.pathways.by.kos <- function(ko.id.list, org){
+    ## how to filter by org?
+    ## http://rest.kegg.jp/link/pathway/ko%3AK00016+ko%3AK00382
     unlist(.SOAP(KEGGserver, "get_pathways_by_kos",
                  .soapArgs=list('ko_id_list'=ko.id.list, org=org),
                  action = KEGGaction, xmlns = KEGGxmlns,
