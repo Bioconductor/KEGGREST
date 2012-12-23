@@ -1,0 +1,98 @@
+Questions for the KEGG team.
+
+
+** No apparent replacement found for old APIs
+
+Is there a new programmatic way to call the old SOAP api "get_motifs_by_gene"?
+I know I can do it manually with a request like this:
+
+http://www.kegg.jp/ssdb-bin/ssdb_motif?kid=eco%3Ab0002&lib=pfam
+
+But then I have to scrape the page.
+
+I have a similar question about "get_genes_by_motifs", which I can also do
+manually from http://www.kegg.jp/kegg/ssdb/. Also, the SOAP API had
+"start" and "max_results" arguments; is there an equivalent?
+
+About the SOAP APIs "get_best_neighbors_by_gene" and 
+"get_best_best_neighbors_by_gene"; it looks like similar 
+functionality is provided by http://www.kegg.jp/kegg/ssdb/ but again,
+is there a more programmatic way to do it?
+
+I’d also like to replace the old API "get_paralogs_by_gene"
+which it seems like I can also do from the 
+http://www.kegg.jp/kegg/ssdb/ page.
+With all of these SSDB functions, is there support for the 
+"start" and "max_results" arguments?
+
+Although I can search compounds by mass,
+(example: http://rest.kegg.jp/find/compound/174.05/exact_mass/),
+I can’t seem to search glycans by mass as I could with the SOAP API
+"search_glycans_by_mass". Is there an equivalent function in the REST API?
+
+There does not seem to be an equivalent to the SOAP API
+"search_compounds_by_subcomp". Is there a replacement?
+
+What about "search_glycans_by_kcam" and the more general-purpose 
+"bget"? Is there a way in the REST api to return flat-file records,
+similar to what "bget"  and "bconv" did?
+
+Two other "missing" functions seem to be "get_ko_by_ko_class"
+and "get_genes_by_ko_class". Are there replacements for these?
+
+** Results of new APIs differ from old
+
+Calling the SOAP api "get_enzymes_by_pathway" with 
+"pathway_id" equal to "path:eco00020" yields a result of 14 
+enzymes; what seems to be the equivalent in REST,
+http://rest.kegg.jp/link/enzyme/path:eco00020 returns nothing.
+Is this expected? Have the data changed?
+
+Similarly, calling "get_compounds_by_pathway" with a 
+"pathway_id" argument of "path:eco00020" returns 20 compounds 
+in SOAP, but the REST equivalent (?),
+http://rest.kegg.jp/link/compound/path%3aeco00020 returns nothing.
+
+Calling this REST api with a different argument:
+http://rest.kegg.jp/link/compound/path:map00010
+does return some results.
+
+Calling the SOAP api "get_kos_by_pathway" with a "pathway_id" 
+argument of "path:hsa00010" returns 36 results, but the seeming REST 
+equivalent, http://rest.kegg.jp/link/ko/path%3ahsa00010 returns nothing.
+
+
+** Missing Arguments
+
+The SOAP API "get_genes_by_organism" has "start" and "max_results
+arguments. The REST equivalent, which seems to be, for example 
+http://rest.kegg.jp/list/hsa does not appear to have such arguments.
+Is there a way to paginate results that come back from the REST server?
+
+It looks like I can call an equivalent of the old 
+"get_genes_by_ko" API, as follows:
+http://rest.kegg.jp/link/genes/ko:K12524
+But in the old API, I could filter by organism (e.g. "eco"). 
+Also, the SOAP api would return annotations, for example, for 
+eco:b0002 it would return 
+"thrA; fused aspartokinase I and homoserine dehydrogenase I 
+(EC:2.7.2.4 1.1.1.3); K12524 bifunctional aspartokinase / homoserine 
+dehydrogenase 1 [EC:2.7.2.4 1.1.1.3] ". 
+
+Is there a way I can get these annotations back in a REST query?
+It seems I only get two columns back, the ko ID and gene ID.
+
+Similarly, the SOAP API "get_pathways_by_kos" had an "org" 
+argument to filter by "organism". The REST equivalent, for 
+example http://rest.kegg.jp/link/pathway/ko:K00016+ko:K00382
+oes not seem to have this option, and the results do not allow
+me to do my own filtering (that is, they do not have three-letter
+organism codes).
+
+Also, the results differ between SOAP and REST.
+In SOAP, calling "get_pathways_by_kos" with a "ko_id_list"
+argument of ko:K00016 and ko:K00382, and an "org" argument 
+of "hsa", returns path:hsa00010 and path:hsa00620, but the results of 
+http://rest.kegg.jp/link/pathway/ko:K00016+ko:K00382 do not
+include these items.
+

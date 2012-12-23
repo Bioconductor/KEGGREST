@@ -155,8 +155,8 @@ get.genes.by.pathway <- function(pathway.id) {
 
 
 get.enzymes.by.pathway <- function(pathway.id){
-    ## maybe hsa:10458 is a better example than path:eco00020
-    .get.x("pathway", pathway.id)
+    ## the example returns nothing whereas in KEGGSOAP it returns 14 enzymes!
+    .get.x("enzyme", pathway.id)
 }
 
 
@@ -219,7 +219,7 @@ list.pathways <- function(org){
 
 
 
-get.genes.by.organism <- function(org, start, max.results){
+get.genes.by.organism <- function(org){
     ## Not sure if it is worth implementing the start and max.results
     ## arguments as they were originally intended to limit the size of
     ## what comes back from the server, but it looks like we
@@ -426,7 +426,7 @@ get.genes.by.ko.class <- function(ko.class.id, org, offset, limit){
 
 get.genes.by.ko  <- function(ko.id, org){
     ## how to filter by org?
-    ## also, need long name
+    ## also, need long name (annotation)
     res<-unlist(.SOAP(KEGGserver, "get_genes_by_ko",
                       .soapArgs=list('ko_id'=ko.id, org=org),
                       action = KEGGaction, xmlns = KEGGxmlns,
@@ -437,13 +437,15 @@ get.genes.by.ko  <- function(ko.id, org){
 }
                       
 get.kos.by.pathway <- function(pathway.id) {
-    ## example returns nothing in rest and python, but returns 36 kos in KEGGSOAP...???
+    ## example returns nothing in rest and python,
+    ## but returns 36 kos in KEGGSOAP...???
     .get.x("ko", pathway.id)
 }
 
 get.pathways.by.kos <- function(ko.id.list, org){
     ## how to filter by org?
     ## http://rest.kegg.jp/link/pathway/ko%3AK00016+ko%3AK00382
+    ## does not return the same thing as KEGGSOAP example
     unlist(.SOAP(KEGGserver, "get_pathways_by_kos",
                  .soapArgs=list('ko_id_list'=ko.id.list, org=org),
                  action = KEGGaction, xmlns = KEGGxmlns,
