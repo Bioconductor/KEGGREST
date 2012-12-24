@@ -40,6 +40,15 @@ similar to what "bget" did?
 Two other "missing" functions seem to be "get_ko_by_ko_class"
 and "get_genes_by_ko_class". Are there replacements for these?
 
+Is the SOAP function get_html_of_colored_pathway_by_elements
+any different from e.g.
+http://www.kegg.jp/kegg-bin/show_pathway?eco00260/b0002%09%23ff0000,%2300ff00/c00263%09%23ffff00,yellow
+?
+
+Is there a REST implementation of the SOAP functions
+get_element_relations_by_pathway and get_elements_by_pathway?
+
+
 ** Results of new APIs differ from old
 
 Calling the SOAP api "get_enzymes_by_pathway" with 
