@@ -38,12 +38,14 @@ get.genes.by.motifs(motif.id.list, start, max.results)
   the textual definition of genes and values of the vector being the ids
   used by KEGG to represent genes
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Jianhua Zhang}
 
 \seealso{\code{\link{get.motifs.by.gene}}}
 \examples{
+\dontrun{
         genes <- get.genes.by.motifs(c("pf:DnaJ", "ps:DNAJ_2"), 1, 10)
+}
 }
 \keyword{ datasets }
 

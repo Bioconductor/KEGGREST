@@ -63,8 +63,10 @@ search.compounds.by.subcomp(mol, offset, limit)
 	compounds_1 <- search.compounds.by.name("shikimic acid")
         compounds_2 <- search.compounds.by.composition("C7H10O5")
         compounds_3 <- search.compounds.by.mass(174.05)
+\dontrun{
         mol <- bget("-f m cpd:C00111")
         compounds_4 <- search.compounds.by.subcomp(mol, 1, 5)
+}
 }
 \keyword{ datasets }
 

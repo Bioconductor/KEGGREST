@@ -1,7 +1,3 @@
-#KEGGserver <- SOAPServer("http://soap.genome.ad.jp/keggapi/request.cgi")
-#KEGGxmlns = "SOAP/KEGG"
-#KEGGaction = "SOAP/KEGG"
-
 ## Helper for cleaning up things that cannot be unlisted.
 
 .getRootUrl <- function()
@@ -38,36 +34,38 @@ get.best.best.neighbors.by.gene <- function(genes.id, start, max.results){
 
 getBestNeighbors <- function(genes.id, start, max.results,
                              what = c("best", "best_best")){
-    what <- match.arg(what)
+    stop("Not yet implemented.")
+    # what <- match.arg(what)
 
-    if(what == "best"){
-        neighbors <-  .SOAP(KEGGserver, "get_best_neighbors_by_gene",
-                            .soapArgs=list('genes_id' = genes.id,
-                            start = start,  'max_results' = max.results),
-                            action=KEGGaction, xmlns = KEGGxmlns,
-                            nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-    }else{
-        neighbors <-  .SOAP(KEGGserver, "get_best_best_neighbors_by_gene",
-                            .soapArgs=list('genes_id' = genes.id,
-                            start = start,
-                                 'max_results' = max.results),
-                            action=KEGGaction, xmlns = KEGGxmlns,
-                            nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-    }
+    # if(what == "best"){
+    #     neighbors <-  .SOAP(KEGGserver, "get_best_neighbors_by_gene",
+    #                         .soapArgs=list('genes_id' = genes.id,
+    #                         start = start,  'max_results' = max.results),
+    #                         action=KEGGaction, xmlns = KEGGxmlns,
+    #                         nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
+    # }else{
+    #     neighbors <-  .SOAP(KEGGserver, "get_best_best_neighbors_by_gene",
+    #                         .soapArgs=list('genes_id' = genes.id,
+    #                         start = start,
+    #                              'max_results' = max.results),
+    #                         action=KEGGaction, xmlns = KEGGxmlns,
+    #                         nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
+    # }
 
-    extractFromNamedListObjs(neighbors)
+    # extractFromNamedListObjs(neighbors)
 }
 ## getBestNeighbors("eco:b0002",1, 5)
 
 
 get.paralogs.by.gene <- function(genes.id, start, max.results){
-    res <- .SOAP(KEGGserver, "get_paralogs_by_gene",
-                 .soapArgs=list('genes_id' = genes.id, start = start,
-                   'max_results' = max.results),
-                 action=KEGGaction, xmlns = KEGGxmlns,
-                 nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-    ## Only the 1st piece has data in it
-    extractFromNamedListObjs(res)
+    stop("Not yet implemented.")
+    # res <- .SOAP(KEGGserver, "get_paralogs_by_gene",
+    #              .soapArgs=list('genes_id' = genes.id, start = start,
+    #                'max_results' = max.results),
+    #              action=KEGGaction, xmlns = KEGGxmlns,
+    #              nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
+    # ## Only the 1st piece has data in it
+    # extractFromNamedListObjs(res)
 }
 ## library(KEGGSOAP); paraGenes <- get.paralogs.by.gene("eco:b0002", 1, 10)
 
@@ -86,7 +84,7 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
 .getUrl <- function(url, parser, ...)
 {
     url <- .cleanUrl(url)
-    .printf("url == %s", url) ## for debugging, remove this later
+    ##.printf("url == %s", url) ## for debugging, remove this later
     response <- GET(url)
     result <- http_status(response)
     if (!result$category == "success")
@@ -180,11 +178,12 @@ get.reactions.by.pathway <- function(pathway.id){
 
 
 get.motifs.by.gene <- function(genes.id, db){
-  res <- .SOAP(KEGGserver, "get_motifs_by_gene",
-               .soapArgs=list('gene_id' = genes.id,
-                 db = db), action=KEGGaction, xmlns = KEGGxmlns,
-               nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-   extractFromNamedListObjs(res)
+        stop("Not yet implemented.")
+  # res <- .SOAP(KEGGserver, "get_motifs_by_gene",
+  #              .soapArgs=list('gene_id' = genes.id,
+  #                db = db), action=KEGGaction, xmlns = KEGGxmlns,
+  #              nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
+  #  extractFromNamedListObjs(res)
 }
 ## motifs <- get.motifs.by.gene("eco:b0002", "pfam")
 
@@ -198,12 +197,13 @@ extractFromDefinitions <- function(def){
 
 
 get.genes.by.motifs <- function(motif.id.list, start, max.results){
-  genes <- .SOAP(KEGGserver, "get_genes_by_motifs",
-                 .soapArgs=list('motif_id_list' = motif.id.list,
-                   start = start, 'max_results' = max.results),
-                 action=KEGGaction, xmlns = KEGGxmlns,
-                 nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-  extractFromDefinitions(genes)
+        stop("Not yet implemented.")
+  # genes <- .SOAP(KEGGserver, "get_genes_by_motifs",
+  #                .soapArgs=list('motif_id_list' = motif.id.list,
+  #                  start = start, 'max_results' = max.results),
+  #                action=KEGGaction, xmlns = KEGGxmlns,
+  #                nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
+  # extractFromDefinitions(genes)
 }
 
 list.databases <- function(){
@@ -214,6 +214,7 @@ list.databases <- function(){
     ##              organism
     ## <org> = KEGG organism code or T number
     ## So, either return that, or don't implement this function.
+        stop("Not implemented.")
 }
 
 list.organisms <- function(){
@@ -342,39 +343,43 @@ search.compounds.by.mass <- function(mass){
 }
 
 search.glycans.by.mass <- function(mass, range){
-    unlist(.SOAP(KEGGserver, "search_glycans_by_mass",
-                 .soapArgs=list('mass' = mass, 'range' = range),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    stop("Not yet implemented.")
+    # unlist(.SOAP(KEGGserver, "search_glycans_by_mass",
+    #              .soapArgs=list('mass' = mass, 'range' = range),
+    #              action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
 }
 
 
 search.compounds.by.subcomp <- function(mol, offset, limit){
-    res <- .SOAP(KEGGserver, "search_compounds_by_subcomp",
-                 .soapArgs=list('mol' = mol, 'offset' = offset, 
-                   'limit' = limit),
-                 action = KEGGaction, xmlns = KEGGxmlns,
-                 nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-    extractFromNamedListObjs(res)
+    stop("Not yet implemented.")
+    # res <- .SOAP(KEGGserver, "search_compounds_by_subcomp",
+    #              .soapArgs=list('mol' = mol, 'offset' = offset, 
+    #                'limit' = limit),
+    #              action = KEGGaction, xmlns = KEGGxmlns,
+    #              nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
+    # extractFromNamedListObjs(res)
 }
 ## library(KEGGSOAP); mol <- bget("-f m cpd:C00111")
 ## c4 <- search.compounds.by.subcomp(mol, 1, 5)
 
 
 search.glycans.by.kcam <- function(kcf, program, option, offset, limit){
-  res <- .SOAP(KEGGserver, "search_glycans_by_kcam",
-               .soapArgs=list('kcf'=kcf, 'program'=program, 'option'=option,
-                 'offset'=offset, 'limit'=limit),
-               action = KEGGaction, xmlns = KEGGxmlns,
-               nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-  extractFromNamedListObjs(res)
+    stop("Not yet implemented.")
+  # res <- .SOAP(KEGGserver, "search_glycans_by_kcam",
+  #              .soapArgs=list('kcf'=kcf, 'program'=program, 'option'=option,
+  #                'offset'=offset, 'limit'=limit),
+  #              action = KEGGaction, xmlns = KEGGxmlns,
+  #              nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
+  # extractFromNamedListObjs(res)
 }
 ## library(KEGGSOAP); kcf <- bget("-f k gl:G12922")
 ## g4 <- search.glycans.by.kcam(kcf, "gapped", "local", 1, 5)
 
 bget <- function(bget.command){
-    unlist(.SOAP(KEGGserver, "bget",
-                 .soapArgs=list('str' = bget.command),
-                 action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    stop("Not yet implemented.")
+    # unlist(.SOAP(KEGGserver, "bget",
+    #              .soapArgs=list('str' = bget.command),
+    #              action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
 }
 
 
@@ -397,36 +402,39 @@ get.ko.by.gene <- function(genes.id) {
 
 ## TODO: compound object returned.  But it should be a simple vector...
 get.ko.by.ko.class <- function(ko.class.id) {
-      res<-.SOAP(KEGGserver, "get_ko_by_ko_class",
-                      .soapArgs=list('ko_class_id' = ko.class.id),
-                      action=KEGGaction, xmlns = KEGGxmlns,
-                      nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
-    extractFromDefinitions(res)
+    stop("Not yet implemented.")
+    #   res<-.SOAP(KEGGserver, "get_ko_by_ko_class",
+    #                   .soapArgs=list('ko_class_id' = ko.class.id),
+    #                   action=KEGGaction, xmlns = KEGGxmlns,
+    #                   nameSpaces = SOAPNameSpaces(version=KEGGsoapns))
+    # extractFromDefinitions(res)
 }
 ## library(KEGGSOAP); ko <- get.ko.by.ko.class("00524")
 
 
 get.genes.by.ko.class <- function(ko.class.id, org, offset, limit){
-    res<-unlist(.SOAP(KEGGserver, "get_genes_by_ko_class",
-                      .soapArgs=list('ko_class_id'=ko.class.id, org=org,
-                        offset=offset, limit=limit),
-                      action = KEGGaction, xmlns = KEGGxmlns,
-                      nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
-    ans <- lapply(res, function(x){x@entry_id})
-    names(ans) <- lapply(res, function(x){x@definition})
-    unlist(ans)
+    stop("Not yet implemented.")
+    # res<-unlist(.SOAP(KEGGserver, "get_genes_by_ko_class",
+    #                   .soapArgs=list('ko_class_id'=ko.class.id, org=org,
+    #                     offset=offset, limit=limit),
+    #                   action = KEGGaction, xmlns = KEGGxmlns,
+    #                   nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    # ans <- lapply(res, function(x){x@entry_id})
+    # names(ans) <- lapply(res, function(x){x@definition})
+    # unlist(ans)
 }
 
 get.genes.by.ko  <- function(ko.id, org){
     ## how to filter by org?
     ## also, need long name (annotation)
-    res<-unlist(.SOAP(KEGGserver, "get_genes_by_ko",
-                      .soapArgs=list('ko_id'=ko.id, org=org),
-                      action = KEGGaction, xmlns = KEGGxmlns,
-                      nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
-    ans <- lapply(res, function(x){x@entry_id})
-    names(ans) <- lapply(res, function(x){x@definition})
-    unlist(ans)
+    stop("Not yet implemented.")
+    # res<-unlist(.SOAP(KEGGserver, "get_genes_by_ko",
+    #                   .soapArgs=list('ko_id'=ko.id, org=org),
+    #                   action = KEGGaction, xmlns = KEGGxmlns,
+    #                   nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    # ans <- lapply(res, function(x){x@entry_id})
+    # names(ans) <- lapply(res, function(x){x@definition})
+    # unlist(ans)
 }
                       
 get.kos.by.pathway <- function(pathway.id) {
@@ -439,9 +447,10 @@ get.pathways.by.kos <- function(ko.id.list, org){
     ## how to filter by org?
     ## http://rest.kegg.jp/link/pathway/ko%3AK00016+ko%3AK00382
     ## does not return the same thing as KEGGSOAP example
-    unlist(.SOAP(KEGGserver, "get_pathways_by_kos",
-                 .soapArgs=list('ko_id_list'=ko.id.list, org=org),
-                 action = KEGGaction, xmlns = KEGGxmlns,
-                 nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
+    stop("Not yet implemented.")
+    # unlist(.SOAP(KEGGserver, "get_pathways_by_kos",
+    #              .soapArgs=list('ko_id_list'=ko.id.list, org=org),
+    #              action = KEGGaction, xmlns = KEGGxmlns,
+    #              nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
 }
 

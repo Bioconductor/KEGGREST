@@ -1,1 +1,1 @@
-.test <- function() BiocGenerics:::testPackage("KEGGSOAP")
+.test <- function() BiocGenerics:::testPackage("KEGGREST")

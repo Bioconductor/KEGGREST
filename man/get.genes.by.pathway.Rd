@@ -36,15 +36,15 @@ get.reactions.by.pathway(pathway.id)
   The functions return a vector of KEGG gene/enzyme/compound/reation ids
   found in the pathway 
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Jianhua Zhang}
 
 \seealso{\code{\link{list.pathways}}}
 \examples{
         genes <- get.genes.by.pathway("path:eco00020")
-        enzymes <- get.enzymes.by.pathway("path:eco00020")
-        compounds <- get.compounds.by.pathway("path:eco00020")
-        reactions <- get.reactions.by.pathway("path:eco00020")
+        enzymes <- get.enzymes.by.pathway("path:map00010")
+        compounds <- get.compounds.by.pathway("path:map00010")
+        reactions <- get.reactions.by.pathway("path:map00010")
 }
 \keyword{ datasets }
 

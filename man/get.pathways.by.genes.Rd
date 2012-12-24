@@ -40,7 +40,7 @@ get.pathways.by.reactions(reaction.id.list)
 \value{
   The functions return a vector of KEGG pathway ids
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Jianhua Zhang}
 
 \seealso{\code{\link{get.genes.by.pathway}},
@@ -50,7 +50,7 @@ get.pathways.by.reactions(reaction.id.list)
 \examples{
         pathways <- get.pathways.by.genes(c("eco:b0077", "eco:b0078"))
         pathways <- get.pathways.by.enzymes("ec:1.3.99.1")
-        pathways <- get.pathways.by.compounds(c("cpd:C00033", "cpd:C00158")))
+        pathways <- get.pathways.by.compounds(c("cpd:C00033", "cpd:C00158"))
         pathways <- get.pathways.by.reactions(c("rn:R00959",
                                  "rn:R02740", "rn:R00960", "rn:R01786"))
 }

@@ -64,9 +64,11 @@ search.glycans.by.kcam(kcf, program, option, offset, limit)
 \examples{
 	glycans_1 <- search.glycans.by.name("Paragloboside")
         glycans_2 <- search.glycans.by.composition("(Man)4 (GalNAc)1")
+\dontrun{
         glycans_3 <- search.glycans.by.mass(689.6, 0.1)
         kcf <- bget("-f k gl:G12922")
         glycans_4 <- search.glycans.by.kcam(kcf, "gapped", "local", 1, 5)
+}
 }
 \keyword{manip}
 

@@ -3,7 +3,7 @@ Version: 0.99.0
 Title: Client-side REST access to KEGG
 Author: Dan Tenenbaum
 Imports: methods, httr
-Suggests: RUnit
+Suggests: RUnit, BiocGenerics
 LazyLoad: yes
 Maintainer: Bioconductor Package Maintainer
         <maintainer@bioconductor.org>

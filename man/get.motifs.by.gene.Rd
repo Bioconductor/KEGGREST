@@ -43,12 +43,14 @@ get.motifs.by.gene(genes.id, db)
   \item{evalue}{a numeric value for the E-value of the motif match for
     Pfam database}
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Jianhua Zhang}
 
 \seealso{\code{\link{get.genes.by.motifs}}}
 \examples{
+\dontrun{
         motifs <- get.motifs.by.gene("eco:b0002", "pfam")
+}
 }
 \keyword{ datasets }
 

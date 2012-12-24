@@ -43,16 +43,20 @@ get.pathways.by.kos(ko.id.list, org)
   The functions return a vector or a named list of values depending on
   what the function is supposed to retrieve.
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Marc Carlson}
 
 \seealso{\code{\link{list.pathways}}}
 \examples{
 	ko <- get.ko.by.gene("eco:b0002")
-	ko <- get.ko.by.ko.class("00524")
-	genes <- get.genes.by.ko.class("00903", "hsa" , 1, 100)
-	genes <- get.genes.by.ko("ko:K12524", "eco")
-        kos <- get.kos.by.pathway("path:hsa00010")
+\dontrun{
+  ko <- get.ko.by.ko.class("00524")
+  genes <- get.genes.by.ko.class("00903", "hsa" , 1, 100)
+  genes <- get.genes.by.ko("ko:K12524", "eco")
+}
+        kos <- get.kos.by.pathway("path:map00010")
+\dontrun{
         pathways <- get.pathways.by.kos(c("ko:K00016","ko:K00382"), "hsa")
+}
 }
 \keyword{ datasets }

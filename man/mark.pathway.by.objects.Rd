@@ -45,7 +45,7 @@ color.pathway.by.objects(pathway.id, object.id.list,
 \value{
   This function returns a character string for the url
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Jianhua Zhang}
 
 \seealso{\code{\link{browseURL}}}

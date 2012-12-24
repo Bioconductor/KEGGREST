@@ -29,7 +29,7 @@ get.genes.by.organism(org)
   The function returns a vector of character strings of ids used by KEGG
   to represent genes
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Jianhua Zhang}
 
 \examples{

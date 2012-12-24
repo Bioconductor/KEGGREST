@@ -1,2 +1,2 @@
-require("KEGGSOAP") || stop("unable to load KEGGSOAP package")
-KEGGSOAP:::.test()
+require("KEGGREST") || stop("unable to load KEGGREST package")
+KEGGREST:::.test()

@@ -21,7 +21,7 @@ bconv(id.list, organism)
 }
 \details{
   Depending on the kind of ID you wish to convert, you must use the
-  appropriate prefix followed by a colo and then the correct ID.
+  appropriate prefix followed by a colon and then the correct ID.
 
   Prefixes supported by KEGG:
 
@@ -38,7 +38,7 @@ bconv(id.list, organism)
   The functions return a named vector with your initial IDs as the names
   and the appropriate KEGG IDs as the value.
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Marc Carlson}
 
 \examples{

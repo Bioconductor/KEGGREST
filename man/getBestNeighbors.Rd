@@ -78,13 +78,15 @@ getBestNeighbors(genes.id, start, max.results, what = c("best", "best_best"))
   \item{length1}{an integer for the amino acid length of the genes\_id1}
   \item{length2}{an integer for the amino acid length of the genes\_id2}
 }
-\references{\url{http://www.genome.jp/kegg/soap/doc/keggapi_manual.html}}
+\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Jianhua Zhang}
 
 \seealso{\code{\link{get.genes.by.organism}}}
 \examples{
+\dontrun{
         bestGenes <- get.best.neighbors.by.gene("eco:b0002",1, 5)
         bestBestGenes <- get.best.best.neighbors.by.gene("eco:b0002",1, 5)
+}
 }
 \keyword{ datasets }
 

@@ -26,12 +26,14 @@ bget(bget.command)
 \author{Nianhua Li}
 
 \examples{
+\dontrun{
 	# retrieve two KEGG/GENES entries
 	bget("eco:b0002 hin:tRNA-Cys-1")
 	# retrieve nucleic acid sequences in a FASTA format
 	bget("-f -n n eco:b0002 hin:tRNA-Cys-1")
 	# retrieve amino acid sequence in a FASTA format
 	bget("-f -n a eco:b0002")
+}
 }
 \keyword{datasets}
 
