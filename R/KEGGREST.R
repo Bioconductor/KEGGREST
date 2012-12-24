@@ -113,6 +113,13 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
 }
 
 
+.conv <- function(arg, organism, ...)
+{
+    url <- sprintf("%s/conv/%s/%s", .getRootUrl(), organism,
+        paste(arg, collapse="+"))
+    .getUrl(url, .list.parser, valueColumn=1, nameColumn=2)
+}
+
 .find <- function(database, arg)
 {
     url <- sprintf("%s/find/%s/%s", .getRootUrl(), database, arg)
@@ -370,26 +377,12 @@ bget <- function(bget.command){
                  action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
 }
 
-## bconv() is handling the issue with only one element all by itself (older).
-## I need to handle some formatting going and coming for this to work right.
-## The input needs to be a vector (which I must parse into a space separated
-## string).  and the output needs to be put into another vector of results (a
-## named vector)
-bconv <- function(id.list){
-    if(length(id.list>1)){id.list=paste(id.list,collapse=" ")}
-    res <- unlist(.SOAP(KEGGserver, "bconv",
-                 .soapArgs=list('str' = id.list),
-                 action = KEGGaction, xmlns = KEGGxmlns,
-                        nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
-    res <- strsplit(res, split = "\n")[[1]]
-    res <- strsplit(res, split = "\t")
-    unlist(lapply(res,function(e){
-      v <- e[2]
-      names(v) <-e[1]
-      v
-    }))
-}
 
+
+bconv <- function(id.list, organism)
+{
+    .conv(id.list, organism)
+}
 
 
 ## Support was requested for kegg orthology "ko" numbers.

@@ -35,7 +35,7 @@ There does not seem to be an equivalent to the SOAP API
 
 What about "search_glycans_by_kcam" and the more general-purpose 
 "bget"? Is there a way in the REST api to return flat-file records,
-similar to what "bget"  and "bconv" did?
+similar to what "bget" did?
 
 Two other "missing" functions seem to be "get_ko_by_ko_class"
 and "get_genes_by_ko_class". Are there replacements for these?
