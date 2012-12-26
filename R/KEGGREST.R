@@ -5,36 +5,37 @@
     getOption("KEGG_REST_URL", "http://rest.kegg.jp")
 }
 
-extractFromNamedListObj <- function(x){
-  names <- slotNames(x)
-  res <- list()
-  for(i in seq_len(length(names))){
-    res[[i]] <- slot(x, names[i])
-  }
-  names(res)<- names
-  res  
+extractFromNamedListObj <- function(x) 
+{
+    res <- lapply(slotNames(x), slot, object=x)
+    setNames(res, slotNames(x))
 }
 
-extractFromNamedListObjs <- function(x){
-  lapply(x, extractFromNamedListObj)
+extractFromNamedListObjs <- function(x)
+{
+    lapply(x, extractFromNamedListObj)
 }
 
 ## for best neighbors, investigate: 
 ## http://www.kegg.jp/pathway/eco00260+b0002+c00263
 ## referenced at http://www.kegg.jp/kegg/rest/weblink.html
 
-get.best.neighbors.by.gene <- function(genes.id, start, max.results){
+get.best.neighbors.by.gene <-
+    function(genes.id, start, max.results)
+{
     getBestNeighbors(genes.id, start, max.results, "best")
 }
 ## get.best.neighbors.by.gene("eco:b0002",1, 5)
 
-get.best.best.neighbors.by.gene <- function(genes.id, start, max.results){
+get.best.best.neighbors.by.gene <- function(genes.id, start, max.results)
+{
     getBestNeighbors(genes.id, start, max.results, "best_best")
 }
 
 getBestNeighbors <- function(genes.id, start, max.results,
-                             what = c("best", "best_best")){
-    stop("Not yet implemented.")
+                             what = c("best", "best_best"))
+{
+    stop("not yet implemented.")
     # what <- match.arg(what)
 
     # if(what == "best"){
@@ -56,9 +57,9 @@ getBestNeighbors <- function(genes.id, start, max.results,
 }
 ## getBestNeighbors("eco:b0002",1, 5)
 
-
-get.paralogs.by.gene <- function(genes.id, start, max.results){
-    stop("Not yet implemented.")
+get.paralogs.by.gene <- function(genes.id, start, max.results)
+{
+    stop("not yet implemented.")
     # res <- .SOAP(KEGGserver, "get_paralogs_by_gene",
     #              .soapArgs=list('genes_id' = genes.id, start = start,
     #                'max_results' = max.results),
@@ -69,9 +70,7 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
 }
 ## library(KEGGSOAP); paraGenes <- get.paralogs.by.gene("eco:b0002", 1, 10)
 
-
 .printf <- function(...) message(noquote(sprintf(...)))
-
 
 .cleanUrl <- function(url)
 {
@@ -87,8 +86,8 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
     ##.printf("url == %s", url) ## for debugging, remove this later
     response <- GET(url)
     result <- http_status(response)
-    if (!result$category == "success")
-        stop(sprintf("Invalid request, server returned %s. (%s)",
+    if (result$category != "success")
+        stop(sprintf("invalid request, server returned %s (%s)",
             result$message, url))
     content <- gsub("^\\s+|\\s+$", "", content(response, "text"))
     if (nchar(content) == 0)
@@ -96,89 +95,77 @@ get.paralogs.by.gene <- function(genes.id, start, max.results){
     do.call(parser, list(content, ...))
 }
 
-.get.x <- function(x, arg)
+.getX <- function(x, arg)
 {
-    if (length(arg) > 1)
-        arg <- paste(arg, collapse="+")
+    arg <- paste(arg, collapse="+")
     url <- sprintf("%s/link/%s/%s", .getRootUrl(), x, arg)
-    .getUrl(url, .link.parser)
+    .getUrl(url, .linkParser)
 }
 
 .list <- function(arg, ...)
 {
     url <- sprintf("%s/list/%s", .getRootUrl(), arg)
-    .getUrl(url, .list.parser, ...)
+    .getUrl(url, .listParser, ...)
 }
-
 
 .conv <- function(arg, organism, ...)
 {
-    url <- sprintf("%s/conv/%s/%s", .getRootUrl(), organism,
-        paste(arg, collapse="+"))
-    .getUrl(url, .list.parser, valueColumn=1, nameColumn=2)
+    arg <- paste(arg, collapse="+")
+    url <- sprintf("%s/conv/%s/%s", .getRootUrl(), organism, arg)
+    .getUrl(url, .listParser, valueColumn=1, nameColumn=2)
 }
 
 .find <- function(database, arg)
 {
     url <- sprintf("%s/find/%s/%s", .getRootUrl(), database, arg)
-    .getUrl(url, .list.parser, valueColumn=1)
+    .getUrl(url, .listParser, valueColumn=1)
 }
 
-.link.parser <- function(txt)
+.linkParser <- function(txt)
 {
     lines <- strsplit(txt, "\n")[[1]]
-    ret <- character()
-    for (line in lines)
-    {
-      ret <- c(ret, strsplit(line, "\t")[[1]][2])
-    }
-    paste(ret, collapse="\n")
-    ret
+    splits <- strsplit(lines, "\t")
+    sapply(splits, "[[", 2)
 }
 
-.list.parser <- function(txt, nameColumn, valueColumn)
+.listParser <- function(txt, valueColumn, nameColumn)
 {
     lines <- strsplit(txt, "\n")[[1]]
-    ret <- character()
-    nms <- character()
-    for (line in lines)
-    {
-        segs <- strsplit(line, "\t")[[1]]
-        ret <- c(ret, segs[valueColumn])
-        if (!missing(nameColumn))
-            nms <- c(nms, segs[nameColumn])
-    }
-    paste(ret, collapse="\n")
-    if (!missing(nameColumn))
+    splits <- strsplit(lines, "\t")
+    ret <- sapply(splits, "[[", valueColumn)
+    if (!missing(nameColumn)) {
+        nms <- sapply(splits, "[[", nameColumn)
         names(ret) <- nms
+    }
     ret
 }
 
-get.genes.by.pathway <- function(pathway.id) {
-    .get.x("genes", pathway.id)
+get.genes.by.pathway <- function(pathway.id)
+{
+    .getX("genes", pathway.id)
 }
 
-
-get.enzymes.by.pathway <- function(pathway.id){
+get.enzymes.by.pathway <- function(pathway.id)
+{
     ## the example returns nothing whereas in KEGGSOAP it returns 14 enzymes!
-    .get.x("enzyme", pathway.id)
+    .getX("enzyme", pathway.id)
 }
 
-
-
-get.compounds.by.pathway <- function(pathway.id){
+get.compounds.by.pathway <- function(pathway.id)
+{
     ## example: path:map00010
-    .get.x("compound", pathway.id)
+    .getX("compound", pathway.id)
 }
 
-get.reactions.by.pathway <- function(pathway.id){
+get.reactions.by.pathway <- function(pathway.id)
+{
     # example: path:map00010
-    .get.x("reaction", pathway.id)
+    .getX("reaction", pathway.id)
 }
 
-
-get.motifs.by.gene <- function(genes.id, db){
-        stop("Not yet implemented.")
+get.motifs.by.gene <- function(genes.id, db)
+{
+    stop("not yet implemented.")
   # res <- .SOAP(KEGGserver, "get_motifs_by_gene",
   #              .soapArgs=list('gene_id' = genes.id,
   #                db = db), action=KEGGaction, xmlns = KEGGxmlns,
@@ -187,17 +174,17 @@ get.motifs.by.gene <- function(genes.id, db){
 }
 ## motifs <- get.motifs.by.gene("eco:b0002", "pfam")
 
-
 ## Helper for cleaning up things that cannot be unlisted.
-extractFromDefinitions <- function(def){
-  res <- sapply(def, slot, "entry_id")
-  names(res) <- sapply(def, slot, "definition")
-  res
+extractFromDefinitions <- function(def)
+{
+    res <- sapply(def, slot, "entry_id")
+    names(res) <- sapply(def, slot, "definition")
+    res
 }
 
-
-get.genes.by.motifs <- function(motif.id.list, start, max.results){
-        stop("Not yet implemented.")
+get.genes.by.motifs <- function(motif.id.list, start, max.results)
+{
+    stop("not yet implemented.")
   # genes <- .SOAP(KEGGserver, "get_genes_by_motifs",
   #                .soapArgs=list('motif_id_list' = motif.id.list,
   #                  start = start, 'max_results' = max.results),
@@ -206,7 +193,8 @@ get.genes.by.motifs <- function(motif.id.list, start, max.results){
   # extractFromDefinitions(genes)
 }
 
-list.databases <- function(){
+list.databases <- function()
+{
     ## There does not seem to be an equivalent call in the REST API.
     ## There is this list of databases in the documentation:
     ##   <database> = pathway | brite | module | disease | drug | environ | ko | genome |
@@ -214,20 +202,21 @@ list.databases <- function(){
     ##              organism
     ## <org> = KEGG organism code or T number
     ## So, either return that, or don't implement this function.
-        stop("Not implemented.")
+    stop("Not implemented.")
 }
 
-list.organisms <- function(){
+list.organisms <- function()
+{
     .list("organism", nameColumn=3, valueColumn=2)
 }
 
-list.pathways <- function(org){
-  .list("pathway", nameColumn=2, valueColumn=1)
+list.pathways <- function(org)
+{
+    .list("pathway", nameColumn=2, valueColumn=1)
 }
 
-
-
-get.genes.by.organism <- function(org){
+get.genes.by.organism <- function(org)
+{
     ## Not sure if it is worth implementing the start and max.results
     ## arguments as they were originally intended to limit the size of
     ## what comes back from the server, but it looks like we
@@ -239,14 +228,12 @@ get.genes.by.organism <- function(org){
     .list(org, valueColumn=1)
 }
 
-
 .get.tmp.url <- function(url, use.httr=TRUE)
 {
     if (use.httr)
     {
         content <- content(GET(url), type="text")
         lines <- strsplit(content, "\n", fixed=TRUE)[[1]]
-
     } else { ## https://github.com/hadley/httr/issues/27
         t <- tempfile()
         download.file(url, t, quiet=TRUE)
@@ -257,12 +244,11 @@ get.genes.by.organism <- function(org){
     sprintf("http://www.kegg.jp%s", path)
 }
 
-
-mark.pathway.by.objects <- function(pathway.id, object.id.list){
+mark.pathway.by.objects <- function(pathway.id, object.id.list)
+{
     ## example: http://www.kegg.jp/pathway/eco00260+b0002+c00263
     pathway.id <- sub("^path:", "", pathway.id)
-    if (!missing(object.id.list))
-    {
+    if (!missing(object.id.list)) {
         object.id.list <- paste(object.id.list, collapse="+")
         pathway.id <- sprintf("%s+%s", pathway.id, object.id.list)
     }
@@ -271,7 +257,8 @@ mark.pathway.by.objects <- function(pathway.id, object.id.list){
 }
 
 color.pathway.by.objects <- function(pathway.id, object.id.list,
-                                     fg.color.list, bg.color.list){
+                                     fg.color.list, bg.color.list)
+{
     ## example: http://www.kegg.jp/kegg-bin/show_pathway?eco00260/b0002%09%23ff0000,%2300ff00/c00263%09%23ffff00,yellow
     ## also works to include organism code in gene IDs
     ## (but don't include path: in pathway id)
@@ -279,20 +266,13 @@ color.pathway.by.objects <- function(pathway.id, object.id.list,
     ## and here: http://www.kegg.jp/kegg/tool/map_pathway2.html
     pathway.id <- sub("^path:", "", pathway.id)
     if (!(length(object.id.list)==length(fg.color.list) &&
-        length(fg.color.list) == length(bg.color.list)))
-    {
+          length(fg.color.list) == length(bg.color.list))) {
         stop(paste("object.id.list, fg.color.list, and bg.color.list must",
             "all be the same length."))
     }
     url <- sprintf("http://www.kegg.jp/kegg-bin/show_pathway?%s/", pathway.id)
-    segs <- character(0)
-    for (i in 1:length(object.id.list))
-    {
-        segs <- c(segs, sprintf("%s%%09%s,%s",
-            object.id.list[i],
-            fg.color.list[i],
-            bg.color.list[i]))
-    }
+    segs <- sprintf("%s%%09%s,%s", object.id.list,
+                    fg.color.list, bg.color.list)
     url <- sprintf("%s%s", url, paste(segs, collapse="/"))
     url <- .cleanUrl(url)
     .get.tmp.url(url, use.httr=FALSE)
@@ -300,40 +280,48 @@ color.pathway.by.objects <- function(pathway.id, object.id.list,
 
 ## NOTE: get.pathways.by.genes() just gives the intersection of the pathways
 ## based on the genes passed in..
-get.pathways.by.genes <- function(genes.id.list){
-    .get.x("pathway", genes.id.list)
+get.pathways.by.genes <- function(genes.id.list)
+{
+    .getX("pathway", genes.id.list)
 }
 
-get.pathways.by.enzymes <- function(enzyme.id.list){
-    .get.x("pathway", enzyme.id.list)
+get.pathways.by.enzymes <- function(enzyme.id.list)
+{
+    .getX("pathway", enzyme.id.list)
 }
 
-get.pathways.by.compounds <- function(compound.id.list){
-    .get.x("pathway", compound.id.list)
+get.pathways.by.compounds <- function(compound.id.list)
+{
+    .getX("pathway", compound.id.list)
 }
 
-get.pathways.by.reactions <- function(reaction.id.list){
-    .get.x("pathway", reaction.id.list)
+get.pathways.by.reactions <- function(reaction.id.list)
+{
+    .getX("pathway", reaction.id.list)
 }
 
-
-search.compounds.by.name <- function(name){
+search.compounds.by.name <- function(name)
+{
     .find("compound", name)
 }
 
-search.glycans.by.name <- function(name){
+search.glycans.by.name <- function(name)
+{
     .find("glycan", name)
 }
 
-search.compounds.by.composition <- function(composition){
+search.compounds.by.composition <- function(composition)
+{
     .find("compound", sprintf("%s/formula", composition))
 }
 
-search.glycans.by.composition <- function(composition){
+search.glycans.by.composition <- function(composition)
+{
     .find("glycan", composition)
 }
 
-search.compounds.by.mass <- function(mass){
+search.compounds.by.mass <- function(mass)
+{
     ## range argument goes away, because docs say:
     ## "The exact mass (or molecular weight) is checked by
     ## rounding off to the same decimal place as the query data."
@@ -342,16 +330,17 @@ search.compounds.by.mass <- function(mass){
     .find("compound", sprintf("%s/exact_mass/", mass))
 }
 
-search.glycans.by.mass <- function(mass, range){
-    stop("Not yet implemented.")
+search.glycans.by.mass <- function(mass, range)
+{
+    stop("not yet implemented.")
     # unlist(.SOAP(KEGGserver, "search_glycans_by_mass",
     #              .soapArgs=list('mass' = mass, 'range' = range),
     #              action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
 }
 
-
-search.compounds.by.subcomp <- function(mol, offset, limit){
-    stop("Not yet implemented.")
+search.compounds.by.subcomp <- function(mol, offset, limit)
+{
+    stop("not yet implemented.")
     # res <- .SOAP(KEGGserver, "search_compounds_by_subcomp",
     #              .soapArgs=list('mol' = mol, 'offset' = offset, 
     #                'limit' = limit),
@@ -362,9 +351,9 @@ search.compounds.by.subcomp <- function(mol, offset, limit){
 ## library(KEGGSOAP); mol <- bget("-f m cpd:C00111")
 ## c4 <- search.compounds.by.subcomp(mol, 1, 5)
 
-
-search.glycans.by.kcam <- function(kcf, program, option, offset, limit){
-    stop("Not yet implemented.")
+search.glycans.by.kcam <- function(kcf, program, option, offset, limit)
+{
+    stop("not yet implemented.")
   # res <- .SOAP(KEGGserver, "search_glycans_by_kcam",
   #              .soapArgs=list('kcf'=kcf, 'program'=program, 'option'=option,
   #                'offset'=offset, 'limit'=limit),
@@ -375,13 +364,13 @@ search.glycans.by.kcam <- function(kcf, program, option, offset, limit){
 ## library(KEGGSOAP); kcf <- bget("-f k gl:G12922")
 ## g4 <- search.glycans.by.kcam(kcf, "gapped", "local", 1, 5)
 
-bget <- function(bget.command){
-    stop("Not yet implemented.")
+bget <- function(bget.command)
+{
+    stop("not yet implemented.")
     # unlist(.SOAP(KEGGserver, "bget",
     #              .soapArgs=list('str' = bget.command),
     #              action = KEGGaction, xmlns = KEGGxmlns, nameSpaces = SOAPNameSpaces(version=KEGGsoapns)))
 }
-
 
 
 bconv <- function(id.list, organism)
@@ -389,20 +378,20 @@ bconv <- function(id.list, organism)
     .conv(id.list, organism)
 }
 
-
 ## Support was requested for kegg orthology "ko" numbers.
 
-get.ko.by.gene <- function(genes.id) {
-    .get.x("ko", genes.id)
+get.ko.by.gene <- function(genes.id)
+{
+    .getX("ko", genes.id)
 }
-
 
 
 ## next three need the return value split() into a named vector.
 
 ## TODO: compound object returned.  But it should be a simple vector...
-get.ko.by.ko.class <- function(ko.class.id) {
-    stop("Not yet implemented.")
+get.ko.by.ko.class <- function(ko.class.id)
+{
+    stop("not yet implemented.")
     #   res<-.SOAP(KEGGserver, "get_ko_by_ko_class",
     #                   .soapArgs=list('ko_class_id' = ko.class.id),
     #                   action=KEGGaction, xmlns = KEGGxmlns,
@@ -411,9 +400,9 @@ get.ko.by.ko.class <- function(ko.class.id) {
 }
 ## library(KEGGSOAP); ko <- get.ko.by.ko.class("00524")
 
-
-get.genes.by.ko.class <- function(ko.class.id, org, offset, limit){
-    stop("Not yet implemented.")
+get.genes.by.ko.class <- function(ko.class.id, org, offset, limit)
+{
+    stop("not yet implemented.")
     # res<-unlist(.SOAP(KEGGserver, "get_genes_by_ko_class",
     #                   .soapArgs=list('ko_class_id'=ko.class.id, org=org,
     #                     offset=offset, limit=limit),
@@ -424,10 +413,11 @@ get.genes.by.ko.class <- function(ko.class.id, org, offset, limit){
     # unlist(ans)
 }
 
-get.genes.by.ko  <- function(ko.id, org){
+get.genes.by.ko  <- function(ko.id, org)
+{
     ## how to filter by org?
     ## also, need long name (annotation)
-    stop("Not yet implemented.")
+    stop("not yet implemented.")
     # res<-unlist(.SOAP(KEGGserver, "get_genes_by_ko",
     #                   .soapArgs=list('ko_id'=ko.id, org=org),
     #                   action = KEGGaction, xmlns = KEGGxmlns,
@@ -437,17 +427,19 @@ get.genes.by.ko  <- function(ko.id, org){
     # unlist(ans)
 }
                       
-get.kos.by.pathway <- function(pathway.id) {
+get.kos.by.pathway <- function(pathway.id)
+{
     ## example returns nothing in rest and python,
     ## but returns 36 kos in KEGGSOAP...???
-    .get.x("ko", pathway.id)
+    .getX("ko", pathway.id)
 }
 
-get.pathways.by.kos <- function(ko.id.list, org){
+get.pathways.by.kos <- function(ko.id.list, org)
+{
     ## how to filter by org?
     ## http://rest.kegg.jp/link/pathway/ko%3AK00016+ko%3AK00382
     ## does not return the same thing as KEGGSOAP example
-    stop("Not yet implemented.")
+    stop("not yet implemented.")
     # unlist(.SOAP(KEGGserver, "get_pathways_by_kos",
     #              .soapArgs=list('ko_id_list'=ko.id.list, org=org),
     #              action = KEGGaction, xmlns = KEGGxmlns,
