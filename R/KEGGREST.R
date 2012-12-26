@@ -5,16 +5,7 @@
     getOption("KEGG_REST_URL", "http://rest.kegg.jp")
 }
 
-extractFromNamedListObj <- function(x) 
-{
-    res <- lapply(slotNames(x), slot, object=x)
-    setNames(res, slotNames(x))
-}
 
-extractFromNamedListObjs <- function(x)
-{
-    lapply(x, extractFromNamedListObj)
-}
 
 ## for best neighbors, investigate: 
 ## http://www.kegg.jp/pathway/eco00260+b0002+c00263
@@ -174,13 +165,6 @@ get.motifs.by.gene <- function(genes.id, db)
 }
 ## motifs <- get.motifs.by.gene("eco:b0002", "pfam")
 
-## Helper for cleaning up things that cannot be unlisted.
-extractFromDefinitions <- function(def)
-{
-    res <- sapply(def, slot, "entry_id")
-    names(res) <- sapply(def, slot, "definition")
-    res
-}
 
 get.genes.by.motifs <- function(motif.id.list, start, max.results)
 {
