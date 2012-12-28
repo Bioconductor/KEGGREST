@@ -1,4 +1,3 @@
-## Helper for cleaning up things that cannot be unlisted.
 
 .getRootUrl <- function()
 {
