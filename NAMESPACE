@@ -1,39 +1,16 @@
 
 importFrom(httr, GET, http_status, content)
+importFrom(png, readPNG, writePNG)
 
-export(color.pathway.by.objects,
-       get.best.best.neighbors.by.gene,
-       getBestNeighbors,
-       get.best.neighbors.by.gene,
-       get.compounds.by.pathway,
-       get.enzymes.by.pathway,
-       get.genes.by.motifs,
-       get.genes.by.organism,
-       get.genes.by.pathway,
-       get.motifs.by.gene,
-       get.paralogs.by.gene,
-       get.pathways.by.compounds,
-       get.pathways.by.enzymes,
-       get.pathways.by.genes,
-       get.pathways.by.reactions,
-       get.reactions.by.pathway,
-       list.databases,
-       list.organisms,
-       list.pathways,
-       mark.pathway.by.objects,
-       search.compounds.by.name,
-       search.glycans.by.name,
-       search.compounds.by.composition,
-       search.glycans.by.composition,
-       search.glycans.by.mass,
-       search.compounds.by.mass,
-       search.compounds.by.subcomp,
-       search.glycans.by.kcam,
-       bget,
-       bconv,
-       get.ko.by.gene,
-       get.ko.by.ko.class,
-       get.genes.by.ko.class,
-       get.genes.by.ko,
-       get.kos.by.pathway,
-       get.pathways.by.kos)
+export(
+    keggInfo,
+    keggList,
+    listDatabases,
+    keggFind,
+    keggGet,
+    keggConv,
+    keggLink,
+    mark.pathway.by.objects,
+    color.pathway.by.objects
+)
+

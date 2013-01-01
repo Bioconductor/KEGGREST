@@ -1,15 +1,15 @@
 Package: KEGGREST
-Version: 0.99.0
+Version: 0.99.1
 Title: Client-side REST access to KEGG
 Author: Dan Tenenbaum
-Imports: methods, httr
+Imports: methods, httr, png
 Suggests: RUnit, BiocGenerics
 LazyLoad: yes
 Maintainer: Bioconductor Package Maintainer
         <maintainer@bioconductor.org>
 Description: A package that provides a client interface to the KEGG
-        REST server, intended to be a drop-in replacement for
-        KEGGSOAP. Based on KEGGSOAP by J. Zhang, R. Gentleman,
+        REST server. Based on KEGGSOAP by J. Zhang, R. Gentleman,
         and Marc Carlson, and KEGG (python package) by Aurelien Mazurie.
 biocViews: Annotation, Pathways, ConnectTools
 License: Artistic-2.0
+SystemRequirements: pandoc for building the vignette from source
