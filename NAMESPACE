@@ -1,6 +1,7 @@
 
 importFrom(httr, GET, http_status, content)
 importFrom(png, readPNG, writePNG)
+importFrom(Biostrings, readAAStringSet)
 
 export(
     keggInfo,

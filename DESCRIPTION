@@ -2,7 +2,7 @@ Package: KEGGREST
 Version: 0.99.1
 Title: Client-side REST access to KEGG
 Author: Dan Tenenbaum
-Imports: methods, httr, png
+Imports: methods, httr, png, Biostrings
 Suggests: RUnit, BiocGenerics
 LazyLoad: yes
 Maintainer: Bioconductor Package Maintainer

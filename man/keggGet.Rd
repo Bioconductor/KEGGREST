@@ -23,11 +23,11 @@ keggGet(dbentries, option = c("aaseq", "ntseq", "mol", "kcf",
 }
 }
 \value{
-A character vector containing a KEGG flat file,
-an amino acid sequence in FASTA format (if \code{option} is \code{aaseq}),
-a nucleotide sequence in FASTA format (if \code{option} is \code{ntseq}),
-or an object which can be written to a PNG file (if \code{option} is
-\code{image}).
+A character vector containing a KEGG flat file.
+If \code{option} is \code{aaseq} or \code{ntseq}, an
+\code{AAStringSet} object.
+If \code{option} is \code{image}, an object which can be written
+to a PNG file.
 }
 \references{
   \url{http://www.kegg.jp/kegg/docs/keggapi.html}

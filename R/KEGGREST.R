@@ -19,7 +19,7 @@
 .getUrl <- function(url, parser, ...)
 {
     url <- .cleanUrl(url)
-    .printf("url == %s", url) ## for debugging, remove this later
+    ##.printf("url == %s", url) ## for debugging, remove this later
     response <- GET(url)
     result <- http_status(response)
     if (result$category != "success")
@@ -72,10 +72,12 @@ keggGet <- function(dbentries,
     {
         if (option == "image")
             return(content(GET(url), type="image/png"))
-        if (option == "aaseq")
-            ## FIXME returns amino acid sequence in FASTA format, 
-            ## what's the best BioC class for this?
-            return(.getUrl(url, .textParser)) 
+        if (option %in% c("aaseq", "ntseq"))
+        {
+            t <- tempfile()
+            cat(.getUrl(url, .textParser), file=t)
+            return(readAAStringSet(t))
+        }
     }
     ## FIXME, convert KEGG flat file to something useful
     .getUrl(url, .textParser)
