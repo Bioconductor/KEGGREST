@@ -25,7 +25,7 @@
     if (result$category != "success")
         stop(sprintf("invalid request, server returned %s (%s)",
             result$message, url))
-    content <- gsub("^\\s+|\\s+$", "", content(response, "text"))
+        content <- .strip(content(response, "text"))
     if (nchar(content) == 0)
         return(character(0))
     do.call(parser, list(content, ...))
@@ -61,15 +61,124 @@ keggFind <- function(database, query,
     .getUrl(url, .listParser, nameColumn=1, valueColumn=2)
 }
 
+
+.get_parser_NAME <- function(entry)
+{
+    ret <- list()
+    for (value in names(entry))
+    {
+        ret[[value]] <- gsub("^;|;$", "", entry[[value]])
+    }
+    ret
+}
+
+
+.strip <- function(str)
+{
+    gsub("^\\s+|\\s+$", "", str)
+}
+
+.get_parser_REFERENCE <- function(entry)
+{
+    REFERENCE_PATTERN <- "[0-9]+\\s+\\[(.*?)\\]"
+    content <- list()
+    reference <- NULL
+    lines <- strsplit(entry, "\n", fixed=TRUE)[[1]]
+    for (line in lines)
+    {
+        ## FIXME finish...
+    }
+}
+
+.get_parser_key_value <- function(entry)
+{
+    content <- c()
+    lines <- strsplit(entry, "\n", fixed=TRUE)[[1]]
+    for (line in lines)
+    {
+        tmp <- strsplit(line, "  ", fixed=TRUE)[[1]]
+        key <- tmp[1]
+        value <- paste(tmp[2:length(tmp)], collapse="  ")
+        content <- c(content, c(.strip(key), .strip(value)))
+    }
+    content
+}
+
+.flatFileParser <- function(txt)
+{
+    entry <- list()
+    allEntries <- c()
+    last_field <- NULL
+    lines <- strsplit(.strip(txt), "\n", fixed=TRUE)[[1]] ## ??
+    for (line in lines)
+    {
+        if (line == "///")
+        {
+            if("ENTRY" %in% names(entry))
+            {
+                entry[["ENTRY"]] <- strsplit(entry[["ENTRY"]][1],
+                    "\\s+", fixed=TRUE)[[1]]
+            }
+            if ("NAME" %in% names(entry))
+            {
+                entry[["NAME"]] <- .get_parser_NAME(entry[["NAME"]])
+            }
+            if ("REFERENCE" %in% names(entry))
+            {
+                entry[["REFERENCE"]] <-
+                    .get_parser_REFERENCE(entry[["REFERENCE"]])
+            }
+            for (key in c("REACTION", "ENZYME"))
+            {
+                if (key %in% names(entry))
+                {
+                    entry[[key]] <- .get_parser_list(entry[[key]])
+                }
+            }
+            for (key in c("PATHWAY", "ORTHOLOGY"))
+            {
+                if (key %in% names(entry))
+                {
+                    entry[[key]] <- .get_parser_key_value(entry[[key]])
+                }
+            }
+
+
+            ## dreaded copy-and-append pattern
+            allEntries <- c(allEntries, entry)
+            entry <- list()
+            last_field <- NULL
+            next
+
+
+        }
+
+        tmp <- strsplit(line, "", fixed=TRUE)[[1]]
+        field <- paste(tmp[1:12], collapse="")
+        field <- .strip(field)
+        value <- paste(tmp[13:length(tmp)], collapse="")
+        value <- .strip(field)
+
+        if (field == "")
+            field <- last_field
+        else {
+            last_field <- field
+            entry[[field]] <- list()
+        }
+        entry[[field]] <- c(entry[[field]], paste(entry[[field]], value, sep=""))
+
+    }
+}
+
 keggGet <- function(dbentries,
     option=c("aaseq", "ntseq", "mol", "kcf", "image"))
 {
     dbentries <- paste(dbentries, collapse="+")
     url <- sprintf("%s/get/%s", .getRootUrl(), dbentries)
     if (!missing(option))
-        url <- sprintf("%s/%s", url, option)
-    if (!missing(option))
     {
+        url <- sprintf("%s/%s", url, option)
+
         if (option == "image")
             return(content(GET(url), type="image/png"))
         if (option %in% c("aaseq", "ntseq"))
@@ -78,8 +187,11 @@ keggGet <- function(dbentries,
             cat(.getUrl(url, .textParser), file=t)
             return(readAAStringSet(t))
         }
+        if (option %in% c("mol", "kcf"))
+            return(.getUrl(url), .textParser)
     }
-    ## FIXME, convert KEGG flat file to something useful
+    #.getUrl(url, .flatFileParser)
+    ## for now just return text:
     .getUrl(url, .textParser)
 }
 
@@ -103,8 +215,8 @@ keggLink <- function(target, source)
 
 .listParser <- function(txt, valueColumn, nameColumn)
 {
-    lines <- strsplit(txt, "\n")[[1]]
-    splits <- strsplit(lines, "\t")
+    lines <- strsplit(txt, "\n", fixed=TRUE)[[1]]
+    splits <- strsplit(lines, "\t", fixed=TRUE)
     ret <- sapply(splits, "[[", valueColumn)
     if (!missing(nameColumn)) {
         nms <- sapply(splits, "[[", nameColumn)

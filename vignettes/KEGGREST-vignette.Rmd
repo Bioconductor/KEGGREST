@@ -1,0 +1,6 @@
+
+# KEGGREST vignette
+
+```{r library_KEGGREST}
+library(KEGGREST)
+```
