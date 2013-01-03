@@ -19,7 +19,9 @@
 .getUrl <- function(url, parser, ...)
 {
     url <- .cleanUrl(url)
-    ##.printf("url == %s", url) ## for debugging, remove this later
+    debug <- getOption("KEGGREST_DEBUG", FALSE)
+    if (debug)
+        .printf("url == %s", url)
     response <- GET(url)
     result <- http_status(response)
     if (result$category != "success")
@@ -39,6 +41,9 @@ keggInfo <- function(database)
     .getUrl(url, .textParser)
 }
 
+
+## FIXME: /list/organism currently returns additional
+## info that we are throwing away.
 keggList <- function(database, organism)
 {
     database <- paste(database, collapse="+")
@@ -102,6 +107,12 @@ keggFind <- function(database, query,
         content <- c(content, c(.strip(key), .strip(value)))
     }
     content
+}
+
+.get_parser_list <- function(entry)
+{
+    tmp <- paste(entry, collapse=" ")
+    strsplit(tmp, "\\s+")[[1]]
 }
 
 .flatFileParser <- function(txt)
