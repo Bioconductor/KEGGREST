@@ -33,6 +33,15 @@
     do.call(parser, list(content, ...))
 }
 
+.organismListParser <- function(url)
+{
+    lines <- readLines(url)
+    split <- strsplit(lines, "\t")
+    u <- unlist(split)
+    m <- matrix(u, ncol=4, byrow=TRUE)
+    colnames(m) <-  c("T.number", "organism", "species", "phylogeny")
+    m
+}
 
 keggInfo <- function(database)
 {
@@ -42,8 +51,6 @@ keggInfo <- function(database)
 }
 
 
-## FIXME: /list/organism currently returns additional
-## info that we are throwing away.
 keggList <- function(database, organism)
 {
     database <- paste(database, collapse="+")
@@ -51,6 +58,8 @@ keggList <- function(database, organism)
         url <- sprintf("%s/list/%s", .getRootUrl(), database)
     else
         url <- sprintf("%s/list/%s/%s", .getRootUrl(), database, organism)
+    if (database == "organism")
+        return(.organismListParser(url))
     .getUrl(url, .listParser, nameColumn=1, valueColumn=2)
 }
 
@@ -83,17 +92,37 @@ keggFind <- function(database, query,
     gsub("^\\s+|\\s+$", "", str)
 }
 
-.get_parser_REFERENCE <- function(entry)
+.rstrip <- function(str)
 {
-    REFERENCE_PATTERN <- "[0-9]+\\s+\\[(.*?)\\]"
-    content <- list()
-    reference <- NULL
-    lines <- strsplit(entry, "\n", fixed=TRUE)[[1]]
-    for (line in lines)
-    {
-        ## FIXME finish...
-    }
+    gsub("\\s+$", "", str)
 }
+
+.lstrip <- function(str)
+{
+    gsub("^\\s+", "", str)
+}
+
+.get_parser_REFERENCE <- function(refs)
+{
+    ret <- list()
+    thisref <- list()
+    sapply(refs, function(item) {
+        if (item$refField == "REFERENCE")
+        {
+          if (length(thisref) > 0)
+            ret <- c(ret, list(thisref))
+          thisref <- list(id=item$value)
+        } else {
+          if (is.null(thisref[[item$refField]]))
+            thisref[[item$refField]] <- list()
+          thisref[[item$refField]] <- c(thisref[[item$refField]], 
+                                        item$value)
+        }
+    })
+    ret <- c(ret, list(thisref))
+    ret
+}
+
 
 .get_parser_key_value <- function(entry)
 {
@@ -117,8 +146,9 @@ keggFind <- function(database, query,
 
 .flatFileParser <- function(txt)
 {
-    entry <- list()
-    allEntries <- c()
+    entry <- list() ## remove?
+    refs <- list()
+    allEntries <- list()
     last_field <- NULL
     lines <- strsplit(.strip(txt), "\n", fixed=TRUE)[[1]] ## ??
     for (line in lines)
@@ -132,13 +162,19 @@ keggFind <- function(database, query,
             }
             if ("NAME" %in% names(entry))
             {
-                entry[["NAME"]] <- .get_parser_NAME(entry[["NAME"]])
+                #####entry[["NAME"]] <- .get_parser_NAME(entry[["NAME"]])
             }
-            if ("REFERENCE" %in% names(entry))
+
+            if (length(refs) > 0)
             {
-                entry[["REFERENCE"]] <-
-                    .get_parser_REFERENCE(entry[["REFERENCE"]])
+                entry[["REFERENCE"]] <- .get_parser_REFERENCE(refs)
             }
+
+            # if ("REFERENCE" %in% names(entry))
+            # {
+            #     entry[["REFERENCE"]] <-
+            #         .get_parser_REFERENCE(entry[["REFERENCE"]])
+            # }
             for (key in c("REACTION", "ENZYME"))
             {
                 if (key %in% names(entry))
@@ -156,34 +192,47 @@ keggFind <- function(database, query,
 
 
             ## dreaded copy-and-append pattern
-            allEntries <- c(allEntries, entry)
+            allEntries <- c(allEntries, list(entry))
             entry <- list()
             last_field <- NULL
+            refs <- list()
             next
-
-
         }
 
         tmp <- strsplit(line, "", fixed=TRUE)[[1]]
         field <- paste(tmp[1:12], collapse="")
-        field <- .strip(field)
+        field <- .rstrip(field)
+        refField <- .lstrip(field)
         value <- paste(tmp[13:length(tmp)], collapse="")
-        value <- .strip(field)
+        value <- .strip(value)
 
-        if (field == "")
+        if (grepl("^ ", field) || field == "")
+        ##if (field == "")
             field <- last_field
         else {
             last_field <- field
-            entry[[field]] <- list()
+            entry[[field]] <- c()
         }
-        entry[[field]] <- c(entry[[field]], paste(entry[[field]], value, sep=""))
+        #if (refField == "REFERENCE")
+        #    thisref <- list(id=value)
+
+        if (field == "REFERENCE")
+        {
+            refs <- c(refs,
+                list(list(field=field, value=value, refField=refField)))
+        }
+        entry[[field]] <- c(entry[[field]], value)
 
     }
+    allEntries
 }
 
 keggGet <- function(dbentries,
     option=c("aaseq", "ntseq", "mol", "kcf", "image"))
 {
+    if (length(dbentries) > 10)
+        warning(paste("More than 10 inputs supplied, only the first"
+            "10 results will be returned."))
     dbentries <- paste(dbentries, collapse="+")
     url <- sprintf("%s/get/%s", .getRootUrl(), dbentries)
     if (!missing(option))
@@ -201,9 +250,7 @@ keggGet <- function(dbentries,
         if (option %in% c("mol", "kcf"))
             return(.getUrl(url), .textParser)
     }
-    #.getUrl(url, .flatFileParser)
-    ## for now just return text:
-    .getUrl(url, .textParser)
+    .getUrl(url, .flatFileParser)
 }
 
 keggConv <- function(target, source)
@@ -235,6 +282,7 @@ keggLink <- function(target, source)
     }
     ret
 }
+
 
 .textParser <- function(txt)
 {

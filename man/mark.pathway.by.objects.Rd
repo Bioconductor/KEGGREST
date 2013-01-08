@@ -40,7 +40,11 @@ color.pathway.by.objects(pathway.id, object.id.list,
 }
 \details{
   This function only returns the URL of the KEGG pathway diagram. Use
-  the function \code{\link{browseURL}} to view the diagram
+  the function \code{\link{browseURL}} to view the diagram.
+
+  These functions are not part of the KEGG REST API; they are provided
+  because they existed in \code{KEGGSOAP} and an alternative implementation
+  was possible.
 }
 \value{
   This function returns a character string for the url
