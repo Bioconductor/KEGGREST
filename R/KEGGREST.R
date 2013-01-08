@@ -231,7 +231,7 @@ keggGet <- function(dbentries,
     option=c("aaseq", "ntseq", "mol", "kcf", "image"))
 {
     if (length(dbentries) > 10)
-        warning(paste("More than 10 inputs supplied, only the first"
+        warning(paste("More than 10 inputs supplied, only the first",
             "10 results will be returned."))
     dbentries <- paste(dbentries, collapse="+")
     url <- sprintf("%s/get/%s", .getRootUrl(), dbentries)

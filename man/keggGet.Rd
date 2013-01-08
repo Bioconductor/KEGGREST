@@ -23,7 +23,7 @@ keggGet(dbentries, option = c("aaseq", "ntseq", "mol", "kcf",
 }
 }
 \value{
-A character vector containing a KEGG flat file.
+A list wrapping a KEGG flat file.
 If \code{option} is \code{aaseq} or \code{ntseq}, an
 \code{AAStringSet} object.
 If \code{option} is \code{image}, an object which can be written

@@ -37,7 +37,6 @@ test_keggList <- function()
     .checkCharVec(res)
     res <- keggList("organism")
     checkTrue("matrix" %in% class(res))
-    .checkCharVec(res)
     res <- keggList("hsa")
     .checkCharVec(res)
     res <- keggList("T01001")
@@ -66,7 +65,7 @@ test_listDatabases <- function()
         }
     }
     res <- keggList("organism")
-    .checkCharVec(res)
+    checkTrue("matrix" %in% class(res))
 }
 
 

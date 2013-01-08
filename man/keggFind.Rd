@@ -42,9 +42,9 @@ Dan Tenenbaum
 \examples{
 keggFind("genes", c("shiga", "toxin")) ## for keywords "shiga" and "toxin"
 keggFind("genes", "shiga toxin") ## for keywords "shiga toxin"
-keggFind("compound", "O5C7", "fkeggFind("compound", "C7H10O5", "formula") ## for chemical formula "C7H10O5"
-ormula") ## for chemical formula containing
-                                    ## "O5" and "C7"
+keggFind("compound", "C7H10O5", "formula") ## for chemical formula "C7H10O5"
+keggFind("compound", "O5C7", "formula") ## for chemical formula containing
+                                        ## "O5" and "C7"
 keggFind("compound", 174.05, "exact_mass") ## for 174.045
                                            ## =< exact mass < 174.055
 keggFind("compound", 300:310, "mol_weight") ## for 300 =<
