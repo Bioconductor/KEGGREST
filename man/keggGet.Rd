@@ -22,6 +22,13 @@ keggGet(dbentries, option = c("aaseq", "ntseq", "mol", "kcf",
     to a PNG file.
 }
 }
+\details{
+Retrieves all entries from the KEGG database for a set of KEGG identifers.
+
+ \code{keggGet}() can only return 10 result sets at once (this limitation
+is on the server side). If you supply more than 10 inputs to \code{keggGet()},
+\code{KEGGREST} will warn that only the first 10 results will be returned.
+}
 \value{
 A list wrapping a KEGG flat file.
 If \code{option} is \code{aaseq} or \code{ntseq}, an

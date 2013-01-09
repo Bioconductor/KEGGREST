@@ -66,6 +66,10 @@ keggList <- function(database, organism)
 keggFind <- function(database, query,
     option=c("formula", "exact_mass", "mol_weight"))
 {
+    if(missing(database))
+        stop("'database' argument is required")
+    if (!missing(option) && !option %in% eval(formals()$option))
+        stop("invalid option")
     if (is.integer(query) && length(query) > 1)
         query <- sprintf("%s-%s", min(query), max(query))
     query <- paste(query, collapse="+")
@@ -248,7 +252,7 @@ keggGet <- function(dbentries,
             return(readAAStringSet(t))
         }
         if (option %in% c("mol", "kcf"))
-            return(.getUrl(url), .textParser)
+            return(.getUrl(url, .textParser))
     }
     .getUrl(url, .flatFileParser)
 }
@@ -293,7 +297,6 @@ keggLink <- function(target, source)
 
 listDatabases <- function()
 {
-    ## FIXME ADD unit test to ensure these all exist
     c("pathway", "brite", "module", "disease", "drug", "environ",
         "ko", "genome", "compound", "glycan", "reaction", "rpair",
         "rclass", "enzyme", "organism")

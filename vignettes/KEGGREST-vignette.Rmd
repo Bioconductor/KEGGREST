@@ -1,3 +1,19 @@
+```{r setup, echo=FALSE}
+options(width=80)
+```
+```{r wrap-hook}
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+```
 
 # KEGGREST
 
@@ -118,13 +134,13 @@ is on the server side). If you supply more than 10 inputs to `keggGet()`,
 
 You can search for two separate keywords ("shiga" and "toxin" in this case):
 
-```{r separate_keywords}
+```{r separate_keywords, linewidth=80}
 head(keggFind("genes", c("shiga", "toxin")))
 ```
 
 Or search for the two words together:
 
-```{r keyphrase}
+```{r keyphrase, linewidth=80}
 head(keggFind("genes", "shiga toxin"))
 ```
 

@@ -21,7 +21,7 @@ keggConv(target, source)
 }
 
   \item{source}{
-  Same as \code{source}, but may also be a list of KEGG identifers
+  Same as \code{target}, but may also be a list of KEGG identifers
   representing internal or external names.
 }
 

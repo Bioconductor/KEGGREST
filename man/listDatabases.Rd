@@ -5,7 +5,8 @@ Lists the KEGG databases which may be searched.
 }
 \description{
 Lists the KEGG databases which may be searched. In most cases,
-you can also use a KEGG organism name or T number as a database name.
+you can also use a KEGG organism name or T number (genome identifier)
+as a database name.
 }
 \usage{
 listDatabases()

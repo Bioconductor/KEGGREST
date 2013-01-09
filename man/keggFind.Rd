@@ -14,18 +14,25 @@ keggFind(database, query, option = c("formula", "exact_mass",
 }
 \arguments{
   \item{database}{
-  A KEGG database (list available via \code{link{listDatabases}()}).
+  Either the name of a single KEGG database (list available via
+  \code{\link{listDatabases}()}, a "T number" genome identifier,
+  or a KEGG organism code (lists of both available via
+  \code{keggList("organism")}).
 }
   \item{query}{
   One or more keywords, or a range of integers representing 
   molecular weights.
+  If \code{query} includes identifiers not known to KEGG, 
+  the results will not contain any information about those identifiers.
 }
   \item{option}{
     \code{Optional.} If \code{database} is \code{compound} or \code{drug},
     \code{option} can be \code{formula}, \code{exact_mass}, or 
     \code{weight}. 
-    Chemical formula search is a partial match irrespective of the order of atoms given. 
-    The exact mass (or molecular weight) is checked by rounding off to the same decimal place as the query data.
+    Chemical formula search is a partial match irrespective of the
+    order of atoms given. 
+    The exact mass (or molecular weight) is checked by rounding off to the
+    same decimal place as the query data.
 }
 }
 \value{
