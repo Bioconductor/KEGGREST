@@ -23,9 +23,9 @@ keggFind <- function(database, query,
 {
     if(missing(database))
         stop("'database' argument is required")
-    if (!missing(option) && !option %in% eval(formals()$option))
-        stop("invalid option")
-        if (is.integer(query) && length(query) > 1)
+    if (!missing(option))
+        option <- match.arg(option)
+    if (is.integer(query) && length(query) > 1)
         query <- sprintf("%s-%s", min(query), max(query))
     query <- paste(query, collapse="+")
     url <- sprintf("%s/find/%s/%s", .getRootUrl(), database, query)
