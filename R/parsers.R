@@ -23,7 +23,9 @@
 {
     ret <- list()
     thisref <- list()
-    sapply(refs, function(item) {
+    for (i in 1:length(refs)) {
+    #sapply(refs, function(item) {
+        item <- refs[[i]]
         if (item$refField == "REFERENCE")
         {
           if (length(thisref) > 0)
@@ -35,7 +37,8 @@
           thisref[[item$refField]] <- c(thisref[[item$refField]], 
                                         item$value)
         }
-    })
+    #})
+    }
     ret <- c(ret, list(thisref))
     ret
 }

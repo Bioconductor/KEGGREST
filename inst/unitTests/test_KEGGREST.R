@@ -134,3 +134,11 @@ test_mark_and_color_pathways_by_objects  <- function(){
   .checkCharVec(url)
   checkTrue(grep("http://", url)==1)
 }
+
+
+test_reference_parser <- function()
+{
+    res <- keggGet("path:map00010")[[1]]
+    refs <- res$REFERENCE[[1]]
+    checkTrue(length(refs) > 0)
+}
