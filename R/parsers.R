@@ -18,6 +18,14 @@
     ret
 }
 
+.get_parser_ENTRY <- function(entry)
+{
+    segs <- strsplit(entry[[1]], "  +")[[1]]
+    ret <- c(segs[1])
+    names(ret) <- segs[2]
+    ret
+}
+
 
 .get_parser_REFERENCE <- function(refs)
 {
@@ -47,14 +55,18 @@
 .get_parser_key_value <- function(entry)
 {
     content <- c()
-    lines <- strsplit(entry, "\n", fixed=TRUE)[[1]]
+    names <- c()
+    lines <- unlist(strsplit(entry, "\n", fixed=TRUE))
     for (line in lines)
     {
         tmp <- strsplit(line, "  ", fixed=TRUE)[[1]]
         key <- tmp[1]
         value <- paste(tmp[2:length(tmp)], collapse="  ")
-        content <- c(content, c(.strip(key), .strip(value)))
+        #content <- c(content, c(.strip(key), .strip(value)))
+        content <- c(content, .strip(value))
+        names <- c(names, .strip(key))
     }
+    names(content) <- names
     content
 }
 
@@ -77,8 +89,7 @@
         {
             if("ENTRY" %in% names(entry))
             {
-                entry[["ENTRY"]] <- strsplit(entry[["ENTRY"]][1],
-                    "\\s+", fixed=TRUE)[[1]]
+                entry[["ENTRY"]] <- .get_parser_ENTRY(entry[["ENTRY"]])
             }
             if ("NAME" %in% names(entry))
             {
@@ -90,14 +101,15 @@
                 entry[["REFERENCE"]] <- .get_parser_REFERENCE(refs)
             }
 
-            for (key in c("REACTION", "ENZYME"))
+            for (key in c("REACTION", "ENZYME", "MARKER", "RELATEDPAIR"))
             {
                 if (key %in% names(entry))
                 {
                     entry[[key]] <- .get_parser_list(entry[[key]])
                 }
             }
-            for (key in c("PATHWAY", "ORTHOLOGY"))
+            for (key in c("PATHWAY", "ORTHOLOGY", "PATHWAY_MAP", "MODULE",
+                "DISEASE", "REL_PATHWAY", "DRUG", "GENE", "COMPOUND"))
             {
                 if (key %in% names(entry))
                 {
