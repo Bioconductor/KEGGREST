@@ -23,7 +23,7 @@ KEGGREST-vignette.pdf:
 	rm -f *.R
 	$(RSCRIPT) --vanilla -e "library(knitr);knit('KEGGREST-vignette.Rmd')"
 	$(RSCRIPT) --vanilla -e "library(knitr);purl('KEGGREST-vignette.Rmd')"
-	pandoc KEGGREST-vignette.pdf KEGGREST-vignette.md
+	pandoc -o KEGGREST-vignette.pdf KEGGREST-vignette.md
 	cp KEGGREST-vignette.md ../inst/doc
 	cp KEGGREST-vignette.R ../inst/doc/KEGGREST-vignette.R.txt
 
