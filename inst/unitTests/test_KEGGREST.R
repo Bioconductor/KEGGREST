@@ -2,20 +2,35 @@ library(KEGGREST)
 library(RUnit)
 
 ## checker helper
-.checkLOL <- function(res){
-  all(checkTrue(class(res)=="list"),
-      checkTrue(class(res[[1]])=="list"),
-      checkTrue(length(res) > 0))
+.checkLOL <- function(res)
+{
+    all(checkTrue(class(res)=="list"),
+        checkTrue(class(res[[1]])=="list"),
+        checkTrue(length(res) > 0))
 }
 
-.checkCharVec <- function(res){
-  all(checkTrue(class(res)=="character"),
-      checkTrue(length(res) > 0))
+.checkCharVec <- function(res)
+{
+    all(checkTrue(class(res)=="character"),
+        checkTrue(length(res) > 0))
 }
 
-.checkPlainText <- function(res) {
+.checkPlainText <- function(res)
+{
     all(checkTrue(class(res)=="character"),
         checkTrue(length(res) == 1))
+}
+
+.checkNamedCharVec <- function(res)
+{
+    .checkCharVec(res) &&
+        checkTrue(length(names(res)) > 0)
+}
+
+.checkUnnamedCharVec <- function(res)
+{
+    .checkCharVec(res) &&
+        is.null(names(res))
 }
 
 test_keggInfo <- function()
@@ -98,8 +113,75 @@ test_keggGet <- function()
     .checkLOL(res[[1]]$REFERENCE)
     res <- keggGet(c("hsa:10458", "ece:Z5100"), "aaseq")
     checkTrue("AAStringSet" %in% class(res))
+    res <- keggGet(c("hsa:10458", "ece:Z5100"), "ntseq")
+    checkTrue("DNAStringSet" %in% class(res))
     png <- keggGet("hsa05130", "image")
     checkTrue("array" %in% class(png))
+}
+
+test_keggGet_2 <- function()
+{
+    res <- keggGet("br:br08901")
+    .checkCharVec(res)
+    res <- keggGet(c("br:br08901", "ece:Z5100"))
+    .checkCharVec(res)
+    res <- keggGet(c("ece:Z5100", "br:br08901"))
+    .checkLOL(res)
+    res <- keggGet("path:map00010")
+    res <- res[[1]]
+    .checkNamedCharVec(res$REL_PATHWAY)
+    .checkNamedCharVec(res$DISEASE)
+    res <- keggGet("md:M00001")
+    .checkNamedCharVec(res[[1]]$REACTION)
+    .checkNamedCharVec(res[[1]]$ORTHOLOGY)
+    res <- keggGet("ds:H00001")
+    .checkLOL(res)
+    .checkUnnamedCharVec(res[[1]]$GENE)
+    .checkUnnamedCharVec(res[[1]]$MARKER)
+    res <- keggGet("dr:D00001")
+    x <- res[[1]]$PRODUCT
+    checkTrue(all(names(x) == c("PRODUCT", "GENERIC", "OTHER")))
+    checkTrue(grepl("^ ", res[[1]]$BRITE[2]))
+    res <- keggGet("ev:E00001")
+    .checkCharVec(res[[1]]$CATEGORY)
+    res <- keggGet("ko:K00001")
+    checkTrue(names(res[[1]]$ENTRY) == "KO")
+    ## DBLINK parser?
+    res <- keggGet("genome:T00001")
+    x <- res[[1]]$CHROMOSOME
+    checkTrue(all(names(x) == c("CHROMOSOME", "SEQUENCE", "LENGTH")))
+    x <- res[[1]]$TAXONOMY
+    checkTrue(all(names(x) == c("TAXONOMY", "LINEAGE")))
+    res <- keggGet("mgnm:T30001")
+    ## metagenome has multiple TAXONOMY sections! fixme
+    .checkCharVec(res[[1]]$ANNOTATION)
+     res <- keggGet("hsa:645954")
+     .checkNamedCharVec(res[[1]]$ORGANISM)
+     ## IS DNAStringSet the best object for a nucleotide sequence? fixme
+     checkTrue(class(res[[1]]$NTSEQ) %in% "DNAStringSet")
+     res <-keggGet("cpd:C00001")
+     .checkUnnamedCharVec(res[[1]]$REACTION)
+     checkTrue(length(res[[1]]$REACTION)> 300)
+     res <- keggGet("gl:G00001")
+     checkTrue("COMPOSITION" %in% names(res[[1]]))
+     res <- keggGet("rn:R00001")
+     checkTrue("EQUATION" %in% names(res[[1]]))
+     res <- keggGet("rp:RP00001")
+     checkTrue("ENTRY1" %in% names(res[[1]]))
+     checkTrue("ENTRY2" %in% names(res[[1]]))
+     res <- keggGet("rc:RC00001")
+     .checkUnnamedCharVec(res[[1]]$REACTION)
+     res <- keggGet("ec:1.1.1.1")
+     .checkUnnamedCharVec(res[[1]]$REACTION)
+     .checkUnnamedCharVec(res[[1]]$ALL_REAC) ## not ideal fixme (?)
+     res <- keggGet("vgnm:NC_018104")
+     checkTrue(is.na(names(res[[1]]$ENTRY))) # not ideal fixme
+     res <- keggGet("vg:NC_018104_1")
+     checkTrue("AAStringSet" %in% class(res[[1]]$AASEQ))
+     checkTrue("DNAStringSet" %in% class(res[[1]]$NTSEQ))
+    # fixme do something with CODON_USAGE?
+
+
 }
 
 test_keggConv <- function()

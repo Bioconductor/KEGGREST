@@ -31,8 +31,8 @@ is on the server side). If you supply more than 10 inputs to \code{keggGet()},
 }
 \value{
 A list wrapping a KEGG flat file.
-If \code{option} is \code{aaseq} or \code{ntseq}, an
-\code{AAStringSet} object.
+If \code{option} is \code{aaseq}, an \code{AAStringSet} object.
+If \code{option} is \code{ntseq}, a \code{DNAStringSet} object.
 If \code{option} is \code{image}, an object which can be written
 to a PNG file.
 }

@@ -1,3 +1,6 @@
+
+
+
 .organismListParser <- function(url)
 {
     lines <- readLines(url)
@@ -20,7 +23,7 @@
 
 .get_parser_ENTRY <- function(entry)
 {
-    segs <- strsplit(entry[[1]], "  +")[[1]]
+    segs <- strsplit(unlist(entry[[1]]), "   +")[[1]]
     ret <- c(segs[1])
     names(ret) <- segs[2]
     ret
@@ -56,13 +59,14 @@
 {
     content <- c()
     names <- c()
-    lines <- unlist(strsplit(entry, "\n", fixed=TRUE))
+    lines <- unlist(strsplit(unname(unlist(entry)), "\n", fixed=TRUE))
     for (line in lines)
     {
         tmp <- strsplit(line, "  ", fixed=TRUE)[[1]]
         key <- tmp[1]
         value <- paste(tmp[2:length(tmp)], collapse="  ")
-        #content <- c(content, c(.strip(key), .strip(value)))
+        if (is.na(value))
+            value <- ""
         content <- c(content, .strip(value))
         names <- c(names, .strip(key))
     }
@@ -72,82 +76,108 @@
 
 .get_parser_list <- function(entry)
 {
-    tmp <- paste(entry, collapse=" ")
-    strsplit(tmp, "\\s+")[[1]]
+    unname(unlist(strsplit(unlist(entry), " {2,}")))
 }
+
+.get_parser_list_or_key_value <- function(entry)
+{
+    x <- unlist(entry)
+    if (any(grepl(" {2,}", x)))
+        .get_parser_key_value(entry)
+    else
+        .get_parser_list(entry)
+##        unlist(unname(sapply(entry, strsplit, " ")))
+}
+
+
+.get_parser_biostring <- function(entry, type)
+{
+    ntseq <- unname(unlist(entry))
+    tmp <- ntseq[2:length(ntseq)]
+    seq <- paste(tmp, collapse="")
+    if (type=="AAStringSet")
+        AAStringSet(seq)
+    else if (type == "DNAStringSet")
+        DNAStringSet(seq)
+}
+
 
 .flatFileParser <- function(txt)
 {
-    entry <- list() ## remove?
+    entry <- list()
     refs <- list()
-    allEntries <- list()
+    allEntries <- c()
     last_field <- NULL
-    lines <- strsplit(.strip(txt), "\n", fixed=TRUE)[[1]] ## ??
+    lines <- strsplit(.strip(txt), "\n", fixed=TRUE)[[1]]
+    ffrec <- flatFileRecordGen()
     for (line in lines)
     {
         if (line == "///")
         {
-            if("ENTRY" %in% names(entry))
+            ffrec$flush()
+            for (name in ffrec$names())
             {
-                entry[["ENTRY"]] <- .get_parser_ENTRY(entry[["ENTRY"]])
-            }
-            if ("NAME" %in% names(entry))
-            {
-                #####entry[["NAME"]] <- .get_parser_NAME(entry[["NAME"]])
-            }
-
-            if (length(refs) > 0)
-            {
-                entry[["REFERENCE"]] <- .get_parser_REFERENCE(refs)
-            }
-
-            for (key in c("REACTION", "ENZYME", "MARKER", "RELATEDPAIR"))
-            {
-                if (key %in% names(entry))
+                item <- ffrec$get(name)
+                if (name == "ENTRY")
+                    ffrec$set("ENTRY", .get_parser_ENTRY(item))
+                if (name %in% c("ENZYME", "MARKER", "ALL_REAC",
+                    "RELATEDPAIR", "DBLINKS", "DRUG", "GENE"))
+                    ffrec$set(name, .get_parser_list(item))
+                if (name %in% c("PATHWAY", "ORTHOLOGY", "PATHWAY_MAP", "MODULE",
+                    "DISEASE", "REL_PATHWAY", "COMPOUND",
+                    "REACTION", "ORGANISM"))
+                    {
+                        ffrec$set(name, .get_parser_key_value(item))
+                    }
+                if (name %in% c("REACTION"))
                 {
-                    entry[[key]] <- .get_parser_list(entry[[key]])
+                    ffrec$set(name, .get_parser_list_or_key_value(item))
+                }
+                item <- ffrec$get(name)
+                if(length(item) == 1 && "list" %in% class(item))
+                {
+                    item <- unlist(item)
+                    item <- unname(item)
+                    ffrec$set(name, item)
                 }
             }
-            for (key in c("PATHWAY", "ORTHOLOGY", "PATHWAY_MAP", "MODULE",
-                "DISEASE", "REL_PATHWAY", "DRUG", "GENE", "COMPOUND"))
+            if ("NTSEQ" %in% ffrec$names())
             {
-                if (key %in% names(entry))
-                {
-                    entry[[key]] <- .get_parser_key_value(entry[[key]])
-                }
+                ffrec$set("NTSEQ",
+                    .get_parser_biostring(ffrec$get("NTSEQ"), "DNAStringSet"))
             }
-
+            if ("AASEQ" %in% ffrec$names())
+            {
+                ffrec$set("AASEQ",
+                    .get_parser_biostring(ffrec$get("AASEQ"), "AAStringSet"))
+            }
 
             ## dreaded copy-and-append pattern
-            allEntries <- c(allEntries, list(entry))
-            entry <- list()
-            last_field <- NULL
-            refs <- list()
-            next
+            allEntries <- c(allEntries, list(ffrec$getFields()))
+            ffrec <- flatFileRecordGen()
+        } else {
+            subfield <- NULL
+            tmp <- strsplit(line, "", fixed=TRUE)[[1]]
+            fs <- tmp[1:12]
+            fs <- fs[!is.na(fs)]
+            first12 <- .strip(paste(fs, collapse=""))
+            if(is.na(tmp[13]))
+                value <- ""
+            else
+                value <- .rstrip(paste(tmp[13:length(tmp)], collapse=""))
+            if (!grepl("^ ", line))
+            {
+                field <- strsplit(line, " ", fixed=TRUE)[[1]][1]
+                ffrec$setField(field)
+            } else {
+                if (first12 != "")
+                {
+                    subfield <- first12
+                    ffrec$setSubfield(first12)
+                }
+            }
+            ffrec$setBody(value)
         }
-
-        tmp <- strsplit(line, "", fixed=TRUE)[[1]]
-        field <- paste(tmp[1:12], collapse="")
-        field <- .rstrip(field)
-        refField <- .lstrip(field)
-        value <- paste(tmp[13:length(tmp)], collapse="")
-        value <- .strip(value)
-
-        if (grepl("^ ", field) || field == "")
-        ##if (field == "")
-            field <- last_field
-        else {
-            last_field <- field
-            entry[[field]] <- c()
-        }
-
-        if (field == "REFERENCE")
-        {
-            refs <- c(refs,
-                list(list(field=field, value=value, refField=refField)))
-        }
-        entry[[field]] <- c(entry[[field]], value)
-
     }
     allEntries
 }
@@ -171,3 +201,105 @@
 }
 
 
+flatFileRecordGen <- setRefClass("KEGGFlatFileRecord", 
+    fields=list("fields"="list",
+        lastField="character",
+        lastSubfield="character",
+        lastReference="list",
+        references="list"),
+    methods=list(
+        initialize=function()
+        {
+            .self$fields <- list()
+            .self$references <- list()
+            .self$lastField <- character(0)
+            .self$lastSubfield <- character(0)
+            .self$lastReference <- list()
+        },
+        setField=function(field)
+        {
+            .self$flush()
+            .self$lastField <- field
+            .self$lastSubfield <- character(0)
+            .self
+        },
+        setSubfield=function(subfield)
+        {
+            .self$lastSubfield <- subfield
+            .self
+        },
+        setBody=function(body)
+        {
+            if (.self$lastField == "REFERENCE")
+            {
+                if(length(.self$lastSubfield))
+                {
+                    if(is.null(.self$lastReference[[.self$lastSubfield]]))
+                        .self$lastReference[[.self$lastSubfield]] <- c()
+                    .self$lastReference[[.self$lastSubfield]] <- c(
+                        .self$lastReference[[.self$lastSubfield]],
+                        body)
+                } else {
+                    if(is.null(.self$lastReference[[.self$lastField]]))
+                        .self$lastReference[[.self$lastField]] <- c()
+                    .self$lastReference[[.self$lastField]] <- c(
+                        .self$lastReference[[.self$lastField]],
+                        body)
+                }
+            } else{
+                if (is.null(.self$fields[[.self$lastField]]))
+                    .self$fields[[.self$lastField]] <- list()
+
+                if(length(.self$lastSubfield))
+                {
+                    if(is.null(.self$fields[[.self$lastField]][[.self$lastSubfield]]))
+                        .self$fields[[.self$lastField]][[.self$lastSubfield]] <- c()
+                    .self$fields[[.self$lastField]][[.self$lastSubfield]] <- c(
+                        .self$fields[[.self$lastField]][[.self$lastSubfield]],
+                        body
+                    )
+                } else {
+                    if (is.null(.self$fields[[.self$lastField]][[.self$lastField]]))
+                        .self$fields[[.self$lastField]][[.self$lastField]] <- c()
+                    .self$fields[[.self$lastField]][[.self$lastField]] <- c(
+                        .self$fields[[.self$lastField]][[.self$lastField]], body)
+                }
+            }
+            .self
+        },
+        flush = function()
+        {
+            .self$fields[["///"]] <- NULL
+            if (length(.self$lastReference))
+            {
+                .self$references[[length(.self$references)+1]] <- .self$lastReference
+                .self$lastReference <- list()
+            }
+            .self
+        },
+        names = function()
+        {
+            nms <- base::names(.self$fields)
+            if (length(.self$references))
+                nms <-c(nms, "REFERENCE")
+            nms
+        },
+        get = function(name)
+        {
+            if (name == "REFERENCE")
+                return(.self$references)
+            return(.self$fields[[name]])
+        },
+        set = function(name, value)
+        {
+            .self$fields[[name]] <- value
+            .self
+        }, getFields = function()
+        {
+            f <- .self$fields
+            if (length(.self$references))
+                f[["REFERENCE"]] <- .self$references
+            f
+        }
+    )
+)

@@ -53,11 +53,16 @@ keggGet <- function(dbentries,
         {
             t <- tempfile()
             cat(.getUrl(url, .textParser), file=t)
-            return(readAAStringSet(t))
+            if (option == "aaseq")
+                return(readAAStringSet(t))
+            else if (option == "ntseq")
+                return(readDNAStringSet(t))
         }
         if (option %in% c("mol", "kcf"))
             return(.getUrl(url, .textParser))
     }
+    if (grepl("^br:", dbentries[1]))
+        return(.getUrl(url, .textParser))
     .getUrl(url, .flatFileParser)
 }
 
