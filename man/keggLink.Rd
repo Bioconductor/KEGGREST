@@ -24,7 +24,7 @@ keggLink(target, source)
 }
 \details{
 Many of the old KEGGSOAP functions whose names
-started with 'get', such as \code{get.pathways.by.gene} and
+started with 'get', such as \code{get.pathways.by.genes} and
 \code{get.pathways.by.reactions},
 are replaced by using \code{keggLink} (see examples).
 
