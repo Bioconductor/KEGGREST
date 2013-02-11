@@ -1,5 +1,5 @@
 Package: KEGGREST
-Version: 0.99.1
+Version: 0.99.2
 Title: Client-side REST access to KEGG
 Author: Dan Tenenbaum
 Imports: methods, httr, png, Biostrings
@@ -10,4 +10,4 @@ Description: A package that provides a client interface to the KEGG
         and Marc Carlson, and KEGG (python package) by Aurelien Mazurie.
 biocViews: Annotation, Pathways, ConnectTools
 License: Artistic-2.0
-SystemRequirements: pandoc for building the vignette from source
+VignetteBuilder: knitr

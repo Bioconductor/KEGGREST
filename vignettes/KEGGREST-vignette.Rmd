@@ -1,3 +1,9 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Accessing the KEGG REST API}
+-->
+
+
 ```{r setup, echo=FALSE}
 options(width=80)
 ```
