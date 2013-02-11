@@ -41,6 +41,7 @@ keggConv("eco", "ncbi-geneid") ## conversion from NCBI GeneID to KEGG ID for
 keggConv("ncbi-geneid", "eco") ## opposite direction
 keggConv("ncbi-gi", c("hsa:10458", "ece:Z5100")) ## conversion from KEGG ID
                                                  ## to NCBI GI
-
+## conversion from NCBI GI to KEGG ID when the organism code is not known:
+keggConv("genes", "ncbi-geneid:3113320") 
 }
 \keyword{ conv }

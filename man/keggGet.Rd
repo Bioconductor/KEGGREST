@@ -8,7 +8,7 @@ Retrieves given database entries.
 }
 \usage{
 keggGet(dbentries, option = c("aaseq", "ntseq", "mol", "kcf", 
-    "image"))
+    "image", "kgml"))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,7 +19,7 @@ keggGet(dbentries, option = c("aaseq", "ntseq", "mol", "kcf",
     \code{Optional.} Option governing the format of the output.
     \code{aaseq} is an amino acid sequence, \code{ntseq} is a nucleotide
     sequence. \code{image} returns an object which can be written
-    to a PNG file.
+    to a PNG file, \code{kgml} returns a KGML document.
 }
 }
 \details{
@@ -35,6 +35,7 @@ If \code{option} is \code{aaseq}, an \code{AAStringSet} object.
 If \code{option} is \code{ntseq}, a \code{DNAStringSet} object.
 If \code{option} is \code{image}, an object which can be written
 to a PNG file.
+If \code{option} is \code{kgml}, a KGML document.
 }
 \references{
   \url{http://www.kegg.jp/kegg/docs/keggapi.html}

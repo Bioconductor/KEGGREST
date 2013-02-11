@@ -36,7 +36,7 @@ keggFind <- function(database, query,
 
 
 keggGet <- function(dbentries,
-    option=c("aaseq", "ntseq", "mol", "kcf", "image"))
+    option=c("aaseq", "ntseq", "mol", "kcf", "image", "kgml"))
 {
     if (length(dbentries) > 10)
         warning(paste("More than 10 inputs supplied, only the first",
@@ -58,7 +58,7 @@ keggGet <- function(dbentries,
             else if (option == "ntseq")
                 return(readDNAStringSet(t))
         }
-        if (option %in% c("mol", "kcf"))
+        if (option %in% c("mol", "kcf", "kgml"))
             return(.getUrl(url, .textParser))
     }
     if (grepl("^br:", dbentries[1]))
