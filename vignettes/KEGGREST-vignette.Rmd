@@ -5,6 +5,7 @@
 
 
 ```{r setup, echo=FALSE}
+library(knitr)
 options(width=80)
 ```
 ```{r wrap-hook, echo=FALSE}
