@@ -1,4 +1,11 @@
 
+.matrixParser <- function(txt, ncol)
+{
+    lines <- strsplit(txt, "\n")[[1]]
+    split <- strsplit(lines, "\t")
+    u <- unlist(split)
+    matrix(u, ncol=ncol, byrow=TRUE)
+}
 
 
 .organismListParser <- function(url)
@@ -6,7 +13,7 @@
     lines <- readLines(url)
     split <- strsplit(lines, "\t")
     u <- unlist(split)
-    m <- matrix(u, ncol=4, byrow=TRUE)
+    m <- .matrixParser(url, 4)
     colnames(m) <-  c("T.number", "organism", "species", "phylogeny")
     m
 }

@@ -76,9 +76,17 @@ keggConv <- function(target, source)
 
 keggLink <- function(target, source)
 {
-    url <- sprintf("%s/link/%s/%s",
-        .getRootUrl(), target, paste(source, collapse="+"))
+    if (missing(source))
+    {
+        url <- sprintf("%s/link/%s",
+            .getGenomeUrl(), target)
+        .getUrl(url, .matrixParser, ncol=3)
+    } else {
+        url <- sprintf("%s/link/%s/%s",
+            .getRootUrl(), target, paste(source, collapse="+"))
     .getUrl(url, .listParser, nameColumn=1, valueColumn=2)
+
+    }   
     ## FIXME?? keggLink("pathway",c("hsa:10458", "ece:Z5100"))
     ## returns a list with duplicate names
 }

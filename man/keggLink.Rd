@@ -48,8 +48,6 @@ keggLink("hsa", "pathway") ## human genes linked from each of the KEGG pathways
 keggLink("pathway", c("hsa:10458", "ece:Z5100")) ## KEGG pathways linked from a
                                                  ## human gene and an E. coli
                                                  ## O157 gene
-                                                 
-
-
+keggLink("hsa:126") ## LinkDB search shows all KEGG resources related to hsa:126
 }
 \keyword{ link }
