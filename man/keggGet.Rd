@@ -56,6 +56,7 @@ png <- keggGet("hsa05130", "image") ## retrieves the image file of a
                                     ## pathway map
 t <- tempfile()
 writePNG(png, t)
+keggGet("hsa05130", "kgml")
 
 }
 \keyword{ get }
