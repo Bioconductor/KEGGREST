@@ -129,7 +129,6 @@ test_keggGet_2 <- function()
     .checkLOL(res)
     res <- keggGet("path:map00010")
     res <- res[[1]]
-    .checkNamedCharVec(res$REL_PATHWAY)
     .checkNamedCharVec(res$DISEASE)
     res <- keggGet("md:M00001")
     .checkNamedCharVec(res[[1]]$REACTION)
