@@ -137,6 +137,7 @@ keggGet(c("hsa:10458", "ece:Z5100"), "ntseq") ## retrieves nucleotide sequences
 ```{r png}
 png <- keggGet("hsa05130", "image") 
 t <- tempfile()
+library(png)
 writePNG(png, t)
 if (interactive()) browseURL(t)
 ```
