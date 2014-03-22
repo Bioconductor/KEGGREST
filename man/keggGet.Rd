@@ -55,6 +55,7 @@ keggGet(c("hsa:10458", "ece:Z5100"), "aaseq") ## retrieves amino acid sequences
 png <- keggGet("hsa05130", "image") ## retrieves the image file of a
                                     ## pathway map
 t <- tempfile()
+library(png)
 writePNG(png, t)
 keggGet("hsa05130", "kgml")
 
