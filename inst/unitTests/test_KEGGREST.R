@@ -139,7 +139,7 @@ test_keggGet_2 <- function()
     .checkUnnamedCharVec(res[[1]]$MARKER)
     res <- keggGet("dr:D00001")
     x <- res[[1]]$PRODUCT
-    checkTrue(all(names(x) == c("PRODUCT", "GENERIC", "OTHER")))
+    checkTrue(all(names(x) == c("PRODUCT", "OTHER")))
     checkTrue(grepl("^ ", res[[1]]$BRITE[2]))
     res <- keggGet("ev:E00001")
     .checkCharVec(res[[1]]$CATEGORY)
