@@ -96,7 +96,7 @@ keggList("hsa")
 
 Once you have a list of specific KEGG identifiers, use
 `keggGet()` to get more information about them. Here we look up
-a human gene an an E. coli O157 gene:
+a human gene and an E. coli O157 gene:
 
 ```{r keggGet}
 query <- keggGet(c("hsa:10458", "ece:Z5100"))
@@ -125,7 +125,7 @@ query[[1]]$DBLINKS
 keggGet(c("hsa:10458", "ece:Z5100"), "aaseq") ## retrieves amino acid sequences
 ```
 
-...or `DNAStringSet` objects if `option` is `aaseq`:
+...or `DNAStringSet` objects if `option` is `ntseq`:
 
 ```{r ntseq}
 keggGet(c("hsa:10458", "ece:Z5100"), "ntseq") ## retrieves nucleotide sequences
