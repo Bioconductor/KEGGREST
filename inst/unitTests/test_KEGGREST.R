@@ -173,7 +173,7 @@ test_keggGet_2 <- function()
      res <- keggGet("ec:1.1.1.1")
      .checkUnnamedCharVec(res[[1]]$REACTION)
      .checkUnnamedCharVec(res[[1]]$ALL_REAC) ## not ideal fixme (?)
-     res <- keggGet("vgnm:NC_018104")
+     #res <- keggGet("vgnm:NC_018104")
      checkTrue(is.na(names(res[[1]]$ENTRY))) # not ideal fixme
      res <- keggGet("hsa:10458")
      checkTrue("AAStringSet" %in% class(res[[1]]$AASEQ))
