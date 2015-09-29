@@ -191,7 +191,7 @@ Convert between KEGG identifiers and outside identifiers.
 You can either specify fully qualified identifiers:
 
 ```{r conv_with_ids}
-keggConv("ncbi-gi", c("hsa:10458", "ece:Z5100"))
+keggConv("ncbi-proteinid", c("hsa:10458", "ece:Z5100"))
 ```
 
 ...or get the mapping for an entire species:

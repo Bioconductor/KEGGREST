@@ -189,7 +189,7 @@ test_keggConv <- function()
     .checkCharVec(res)
     res <- keggConv("ncbi-geneid", "eco")
     .checkCharVec(res)
-    res <- keggConv("ncbi-gi", c("hsa:10458", "ece:Z5100"))
+    res <- keggConv("ncbi-proteinid", c("hsa:10458", "ece:Z5100"))
     .checkCharVec(res)
 }
 

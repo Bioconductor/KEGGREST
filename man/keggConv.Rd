@@ -14,7 +14,8 @@ keggConv(target, source)
 \arguments{
   \item{target}{
   A KEGG organism code (), T number, or one of the external
-  databases \code{ncbi-gi}, \code{ncbi-geneid}, \code{uniprot}, or
+  databases \code{ncbi-gi}, \code{ncbi-geneid}, \code{ncbi-proteinid},
+  \code{uniprot}, or
   (for chemical substance identifiers) 
   \code{drug}, \code{compound}, or \code{glycan}, \code{pubchem},
   or \code{chebi}.
@@ -39,7 +40,7 @@ Dan Tenenbaum
 head(keggConv("eco", "ncbi-geneid")) ## conversion from NCBI GeneID to 
                                ## KEGG ID for E. coli genes
 head(keggConv("ncbi-geneid", "eco")) ## opposite direction
-head(keggConv("ncbi-gi", c("hsa:10458", "ece:Z5100"))) ## conversion from KEGG ID
+head(keggConv("ncbi-proteinid", c("hsa:10458", "ece:Z5100"))) ## conversion from KEGG ID
                                                  ## to NCBI GI
 ## conversion from NCBI GI to KEGG ID when the organism code is not known:
 head(keggConv("genes", "ncbi-geneid:3113320"))
