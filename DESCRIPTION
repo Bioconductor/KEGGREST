@@ -1,5 +1,5 @@
 Package: KEGGREST
-Version: 1.10.0
+Version: 1.11.0
 Title: Client-side REST access to KEGG
 Author: Dan Tenenbaum
 Imports: methods, httr, png, Biostrings
