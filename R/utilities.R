@@ -26,11 +26,8 @@
     if (debug)
         .printf("url == %s", url)
     response <- GET(url)
-    result <- http_status(response)
-    if (result$category != "success")
-        stop(sprintf("invalid request, server returned %s (%s)",
-            result$message, url))
-        content <- .strip(content(response, "text"))
+    stop_for_status(response)
+    content <- .strip(content(response, "text"))
     if (nchar(content) == 0)
         return(character(0))
     do.call(parser, list(content, ...))

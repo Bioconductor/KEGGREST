@@ -1,8 +1,9 @@
 
-importFrom(httr, GET, http_status, content)
+importFrom(httr, GET, http_status, content, stop_for_status)
 importFrom(png, readPNG, writePNG)
 importFrom(Biostrings, readAAStringSet, readDNAStringSet,
     DNAStringSet, AAStringSet)
+import(methods)
 
 export(
     keggInfo,
