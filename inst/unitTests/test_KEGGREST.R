@@ -68,12 +68,13 @@ test_keggList <- function()
 ## x in listDatabases, but that might slam KEGG too hard and
 ## make them mad. Instead we hit /info. KEGG does not like
 ## /info/organism for some reason so we will test /list/organism.
+## NOTE: rpair (RP ids) was discontinued in 2016.
 test_listDatabases <- function()
 {
     dbs <- listDatabases()
     for (db in dbs)
     {
-        if (db != "organism")
+        if (all(db != c("organism", "rpair")))
         {
             res <- keggInfo(db)
             .checkPlainText(res)
@@ -165,9 +166,6 @@ test_keggGet_2 <- function()
      checkTrue("COMPOSITION" %in% names(res[[1]]))
      res <- keggGet("rn:R00001")
      checkTrue("EQUATION" %in% names(res[[1]]))
-     res <- keggGet("rp:RP00001")
-     checkTrue("ENTRY1" %in% names(res[[1]]))
-     checkTrue("ENTRY2" %in% names(res[[1]]))
      res <- keggGet("rc:RC00001")
      .checkUnnamedCharVec(res[[1]]$REACTION)
      res <- keggGet("ec:1.1.1.1")
