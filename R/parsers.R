@@ -13,7 +13,7 @@
     lines <- readLines(url)
     split <- strsplit(lines, "\t")
     u <- unlist(split)
-    m <- .matrixParser(url, 4)
+    m <- matrix(u, ncol=4, byrow=TRUE)
     colnames(m) <-  c("T.number", "organism", "species", "phylogeny")
     m
 }
