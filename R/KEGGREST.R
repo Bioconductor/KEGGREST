@@ -95,9 +95,9 @@ keggLink <- function(target, source)
 
 listDatabases <- function()
 {
-    c("pathway", "brite", "module", "disease", "drug", "environ",
-        "ko", "genome", "compound", "glycan", "reaction",
-        "rclass", "enzyme", "organism")
+    c("pathway", "brite", "module", "ko", "genome", "vg", "ag", "compound",
+        "glycan", "reaction", "rclass", "enzyme", "disease", "drug",
+        "dgroup", "environ", "genes", "ligand", "kegg")
 }
 
 
