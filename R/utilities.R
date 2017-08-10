@@ -60,7 +60,7 @@
         download.file(url, t, quiet=TRUE)
         lines <- readLines(t)
     }
-    urlLine <- grep("<img src=\"/tmp", lines, value=T)
+    urlLine <- grep("<img src=\"/tmp", lines, value=TRUE)
     path <- strsplit(urlLine, '"', fixed=TRUE)[[1]][2]
     sprintf("http://www.kegg.jp%s", path)
 }
