@@ -138,7 +138,6 @@ test_keggGet_2 <- function()
     res <- keggGet("ds:H00001")
     .checkLOL(res)
     .checkUnnamedCharVec(res[[1]]$GENE)
-    .checkUnnamedCharVec(res[[1]]$MARKER)
     res <- keggGet("dr:D00001")
     x <- res[[1]]$PRODUCT
     checkTrue(all(names(x) == c("PRODUCT","GENERIC","OTHER")))
