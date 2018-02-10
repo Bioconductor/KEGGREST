@@ -28,7 +28,7 @@ keggConv(target, source, querySize = 100)
 
   \item{querySize}{
   Empirically, KEGG limits queries to 100 source identifiers per query.
-  This argument enables larger queries by divides \code{source} into
+  This argument enables larger queries by dividing \code{source} into
   sub-queries of no more than \code{querySize} identifiers.
 }
 
