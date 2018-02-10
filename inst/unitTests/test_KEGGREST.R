@@ -181,6 +181,15 @@ test_keggGet_2 <- function()
 
 }
 
+test_splitInGroups <- function()
+{
+    .splitInGroups <- KEGGREST:::.splitInGroups
+    checkIdentical(.splitInGroups(character(), 3), list())
+    checkIdentical(.splitInGroups(1:5, 3), list(1:3, 4:5))
+    checkIdentical(.splitInGroups(1:6, 3), list(1:3, 4:6))
+    checkIdentical(.splitInGroups(1:7, 3), list(1:3, 4:6, 7L))
+}
+
 test_keggConv <- function()
 {
     res <- keggConv("eco", "ncbi-geneid")

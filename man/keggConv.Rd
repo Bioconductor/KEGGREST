@@ -9,7 +9,7 @@ Convert KEGG identifiers to/from outside identifiers
 Convert KEGG identifiers to/from outside identifiers.
 }
 \usage{
-keggConv(target, source)
+keggConv(target, source, querySize = 100)
 }
 \arguments{
   \item{target}{
@@ -26,6 +26,12 @@ keggConv(target, source)
   representing internal or external names.
 }
 
+  \item{querySize}{
+  Empirically, KEGG limits queries to 100 source identifiers per query.
+  This argument enables larger queries by divides \code{source} into
+  sub-queries of no more than \code{querySize} identifiers.
+}
+
 }
 \value{
 A named character vector.
@@ -37,11 +43,13 @@ A named character vector.
 Dan Tenenbaum
 }
 \examples{
-head(keggConv("eco", "ncbi-geneid")) ## conversion from NCBI GeneID to 
-                               ## KEGG ID for E. coli genes
+## conversion from NCBI GeneID to KEGG ID for E. coli genes
+head(keggConv("eco", "ncbi-geneid"))
 head(keggConv("ncbi-geneid", "eco")) ## opposite direction
-head(keggConv("ncbi-proteinid", c("hsa:10458", "ece:Z5100"))) ## conversion from KEGG ID
-                                                 ## to NCBI GI
+
+## conversion from KEGG ID to NCBI GI
+head(keggConv("ncbi-proteinid", c("hsa:10458", "ece:Z5100")))
+
 ## conversion from NCBI GI to KEGG ID when the organism code is not known:
 head(keggConv("genes", "ncbi-geneid:3113320"))
 }

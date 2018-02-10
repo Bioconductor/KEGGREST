@@ -66,13 +66,19 @@ keggGet <- function(dbentries,
     .getUrl(url, .flatFileParser)
 }
 
-keggConv <- function(target, source)
+.keggConv <- function(target, source)
 {
-    url <- sprintf("%s/conv/%s/%s",
-        .getRootUrl(), target, paste(source, collapse="+"))
-    .getUrl(url, .listParser, nameColumn=1, valueColumn=2)
+    query <-paste(source, collapse = "+") 
+    url <- sprintf("%s/conv/%s/%s", .getRootUrl(), target, query)
+    .getUrl(url, .listParser, nameColumn = 1, valueColumn = 2)
 }
 
+keggConv <- function (target, source, querySize = 100)
+{
+    groups <- .splitInGroups(source, querySize)
+    answer <- lapply(groups, .keggConv, target = target)
+    as(unlist(answer), "character")
+}
 
 keggLink <- function(target, source)
 {

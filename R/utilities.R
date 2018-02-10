@@ -48,7 +48,6 @@
     gsub("^\\s+", "", str)
 }
 
-
 .get.tmp.url <- function(url, use.httr=TRUE)
 {
     if (use.httr)
@@ -65,4 +64,9 @@
     sprintf("http://www.kegg.jp%s", path)
 }
 
-
+.splitInGroups <- function(x, n)
+{
+    groups <- seq_len(ceiling(length(x) / n))
+    members <- head(rep(groups, each = n), length(x))
+    unname(split(x, members))
+}
