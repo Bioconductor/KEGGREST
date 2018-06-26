@@ -24,17 +24,20 @@ keggInfo(database)
 A character vector containing statistics about \code{database}.
 }
 \references{
-  \url{http://www.kegg.jp/kegg/docs/keggapi.html}
+  \url{https://www.kegg.jp/kegg/docs/keggapi.html}
 }
 \author{
 Dan Tenenbaum
 }
 \examples{
-keggInfo("kegg") ## displays the current statistics of the KEGG database
-keggInfo("pathway") ## displays the number pathway entries including both
+res <- keggInfo("kegg") ## displays the current statistics of the KEGG database
+cat(res)
+res <- keggInfo("pathway") ## displays the number pathway entries including both
                     ## the reference and organism-specific pathways
-keggInfo("hsa") ## displays the number of gene entries for the KEGG organism
-                ## Homo sapiens
+cat(res)
+res <- keggInfo("hsa") ## displays the number of gene entries for the
+                    ## KEGG organism Homo sapiens
+cat(res)
 }
 \keyword{ info }
 \keyword{ metadata }

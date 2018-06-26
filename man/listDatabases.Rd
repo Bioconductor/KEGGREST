@@ -15,7 +15,7 @@ listDatabases()
 A character vector of database names.
 }
 \references{
-  \url{http://www.kegg.jp/kegg/docs/keggapi.html}
+  \url{https://www.kegg.jp/kegg/docs/keggapi.html}
 }
 \author{
 Dan Tenenbaum
@@ -25,10 +25,16 @@ Dan Tenenbaum
 }
 \examples{
 listDatabases()
-keggList("organism") ## list all organisms
-keggList("hsa") ## list all human genes
-keggList("genome") ## list all genome identifiers
-keggList("T01001") ## list all human genes
+res <- keggList("organism") ## list all organisms
+nrow(res)
+head(res)
+res <- keggList("hsa") ## list all human genes
+length(res)
+head(res)
+## keggList("T01001") ## list all human genes
+res <- keggList("genome") ## list all genome identifiers
+length(res)
+head(res)
 }
 \keyword{ database }
 \keyword{ databases }

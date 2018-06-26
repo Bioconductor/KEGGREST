@@ -37,7 +37,7 @@ keggConv(target, source, querySize = 100)
 A named character vector.
 }
 \references{
-  \url{http://www.kegg.jp/kegg/docs/keggapi.html}
+  \url{https://www.kegg.jp/kegg/docs/keggapi.html}
 }
 \author{
 Dan Tenenbaum

@@ -38,26 +38,29 @@ to a PNG file.
 If \code{option} is \code{kgml}, a KGML document.
 }
 \references{
-  \url{http://www.kegg.jp/kegg/docs/keggapi.html}
+  \url{https://www.kegg.jp/kegg/docs/keggapi.html}
 }
 \author{
 Dan Tenenbaum
 }
 \examples{
-keggGet(c("cpd:C01290", "gl:G00092")) ## retrieves a compound entry
-                                  ## and a glycan entry
-keggGet(c("C01290", "G00092")) ## same as above, without prefixes
-keggGet(c("hsa:10458", "ece:Z5100")) ## retrieves a human gene entry
-                                     ## and an E.coli O157 gene entry
-keggGet(c("hsa:10458", "ece:Z5100"), "aaseq") ## retrieves amino acid sequences
-                                              ## of a human gene and an 
-                                              ## E.coli O157 gene
+res <- keggGet(c("cpd:C01290", "gl:G00092")) ## retrieves a compound entry
+                                    ## and a glycan entry
+str(res)
+res <- keggGet(c("C01290", "G00092")) ## same as above, without prefixes
+str(res)
+res <- keggGet(c("hsa:10458", "ece:Z5100")) ## retrieves a human gene entry
+                                    ## and an E.coli O157 gene entry
+str(res)
+res <- keggGet(c("hsa:10458", "ece:Z5100"), "aaseq") ## retrieves amino
+                                    ## acid sequences of a human gene and an 
+                                    ## E.coli O157 gene
 png <- keggGet("hsa05130", "image") ## retrieves the image file of a
                                     ## pathway map
 t <- tempfile()
 library(png)
 writePNG(png, t)
-keggGet("hsa05130", "kgml")
-
+res <- keggGet("hsa05130", "kgml")
+str(res)
 }
 \keyword{ get }

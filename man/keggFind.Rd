@@ -39,7 +39,7 @@ keggFind(database, query, option = c("formula", "exact_mass",
 A named character vector.
 }
 \references{
-\url{http://www.kegg.jp/kegg/docs/keggapi.html}
+\url{https://www.kegg.jp/kegg/docs/keggapi.html}
 }
 \author{
 Dan Tenenbaum
@@ -47,14 +47,23 @@ Dan Tenenbaum
 
 
 \examples{
-keggFind("genes", c("shiga", "toxin")) ## for keywords "shiga" and "toxin"
-keggFind("genes", "shiga toxin") ## for keywords "shiga toxin"
+res <-
+    keggFind("genes", c("shiga", "toxin")) ## for keywords "shiga" and "toxin"
+length(res)
+head(res)
+res <- keggFind("genes", "shiga toxin")    ## for keywords "shiga toxin"
+length(res)
+head(res)
 keggFind("compound", "C7H10O5", "formula") ## for chemical formula "C7H10O5"
-keggFind("compound", "O5C7", "formula") ## for chemical formula containing
-                                        ## "O5" and "C7"
+res <- keggFind("compound", "O5C7", "formula") ## for chemical formula
+                                           ## containing "O5" and "C7" 
+length(res)
+head(res)
 keggFind("compound", 174.05, "exact_mass") ## for 174.045
                                            ## =< exact mass < 174.055
-keggFind("compound", 300:310, "mol_weight") ## for 300 =<
-                                            ## molecular weight =< 310
+res <- keggFind("compound", 300:310, "mol_weight") ## for 300 =<
+                                           ## molecular weight =< 310
+length(res)
+head(res)
 }
 \keyword{ find }

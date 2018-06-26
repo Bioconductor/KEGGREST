@@ -49,20 +49,22 @@ color.pathway.by.objects(pathway.id, object.id.list,
 \value{
   This function returns a character string for the url
 }
-\references{\url{http://www.kegg.jp/kegg/docs/keggapi.html}}
+\references{\url{https://www.kegg.jp/kegg/docs/keggapi.html}}
 \author{Jianhua Zhang}
 
 \seealso{\code{\link{browseURL}}}
 \examples{
-        url <- mark.pathway.by.objects("path:eco00260",
-                       c("eco:b0002", "eco:c00263"))
-        if(interactive()){
-            browseURL(url)
-        }
-       url <- color.pathway.by.objects("path:eco00260",
-                       c("eco:b0002", "eco:c00263"),
-                       c("#ff0000", "#00ff00"), c("#ffff00", "yellow"))
- 
+ url <- mark.pathway.by.objects(
+    "path:eco00260", c("eco:b0002", "eco:c00263")
+)
+if(interactive()){
+    browseURL(url)
+}
+url <- color.pathway.by.objects(
+    "path:eco00260", c("eco:b0002", "eco:c00263"),
+    c("#ff0000", "#00ff00"),
+    c("#ffff00", "yellow")
+)
 }
 \keyword{ datasets }
 
