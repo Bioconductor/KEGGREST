@@ -115,7 +115,7 @@ mark.pathway.by.objects <- function(pathway.id, object.id.list)
         object.id.list <- paste(object.id.list, collapse="+")
         pathway.id <- sprintf("%s+%s", pathway.id, object.id.list)
     }
-    url <- sprintf("http://www.kegg.jp/pathway/%s", pathway.id)
+    url <- sprintf("https://www.kegg.jp/pathway/%s", pathway.id)
     .get.tmp.url(url)
 }
 
@@ -135,7 +135,7 @@ color.pathway.by.objects <- function(pathway.id, object.id.list,
         stop(paste("object.id.list, fg.color.list, and bg.color.list must",
             "all be the same length."))
     }
-    url <- sprintf("http://www.kegg.jp/kegg-bin/show_pathway?%s/", pathway.id)
+    url <- sprintf("https://www.kegg.jp/kegg-bin/show_pathway?%s/", pathway.id)
     segs <- sprintf("%s%%09%s,%s", object.id.list,
                     fg.color.list, bg.color.list)
     url <- sprintf("%s%s", url, paste(segs, collapse="/"))
