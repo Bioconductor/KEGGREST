@@ -16,7 +16,7 @@
      url <- gsub(" ", "%20", url, fixed=TRUE)
      url <- gsub("#", "%23", url, fixed=TRUE)
      url <- gsub(":", "%3a", url, fixed=TRUE)
-     sub("http%3a//", "http://", url, fixed=TRUE)
+     sub("http(s)*%3a//", "http\\1://", url)
 }
 
 .getUrl <- function(url, parser, ...)
@@ -61,7 +61,7 @@
     }
     urlLine <- grep("<img src=\"/tmp", lines, value=TRUE)
     path <- strsplit(urlLine, '"', fixed=TRUE)[[1]][2]
-    sprintf("http://www.kegg.jp%s", path)
+    sprintf("https://www.kegg.jp%s", path)
 }
 
 .splitInGroups <- function(x, n)

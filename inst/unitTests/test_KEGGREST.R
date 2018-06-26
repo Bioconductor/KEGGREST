@@ -214,13 +214,13 @@ test_mark_and_color_pathways_by_objects  <- function(){
   url <- mark.pathway.by.objects("path:eco00260",
                                  c("eco:b0002", "eco:c00263"))
   .checkCharVec(url)
-  checkTrue(grep("http://", url)==1)
+  checkTrue(grep("https://", url)==1)
   url <- color.pathway.by.objects("path:eco00260",
                                   c("eco:b0002", "eco:c00263"),
                                   c("#ff0000", "#00ff00"),
                                   c("#ffff00", "yellow"))
   .checkCharVec(url)
-  checkTrue(grep("http://", url)==1)
+  checkTrue(grep("https://", url)==1)
 }
 
 
