@@ -193,9 +193,14 @@
 {
     lines <- strsplit(txt, "\n", fixed=TRUE)[[1]]
     splits <- strsplit(lines, "\t", fixed=TRUE)
-    ret <- sapply(splits, "[[", valueColumn)
+    len <- lengths(splits)
+    ret <- character(length(len))
+    idx <- len >= valueColumn
+    ret[idx]  <- sapply(splits[idx], "[[", valueColumn)
     if (!missing(nameColumn)) {
-        nms <- sapply(splits, "[[", nameColumn)
+        idx <- len >= nameColumn
+        nms <- character(length(len))
+        nms[idx] <- sapply(splits[idx], "[[", nameColumn)
         names(ret) <- nms
     }
     ret
