@@ -121,12 +121,9 @@ mark.pathway.by.objects <- function(pathway.id, object.id.list)
 
 ## This is not strictly speaking an API supported by the KEGG REST
 ## server, but it seems useful, and does not use SOAP, so I'm leaving it in.
-color.pathway.by.objects <- function(
-    pathway.id,
-    object.id.list,
-    fg.color.list,
-    bg.color.list
-) {
+color.pathway.by.objects <- function(pathway.id, object.id.list,
+    fg.color.list, bg.color.list)
+{
     ## example: http://www.kegg.jp/kegg-bin/show_pathway?eco00260/b0002%09%23ff0000,%2300ff00/c00263%09%23ffff00,yellow
     ## also works to include organism code in gene IDs
     ## (but don't include path: in pathway id)
@@ -172,10 +169,16 @@ color.pathway.by.objects <- function(
     )
     img_url <- regmatches(res, img_matches)
     if (length(img_url) < 1) {
-        stop("Failed to extract KEGG image path from response.")
+        stop(
+            "'color.pathway.by.objects()' ",
+            "failed to extract KEGG image path from response."
+        )
     }
     if (length(img_url) > 1) {
-        stop("Unexpectedly matched multiple KEGG image paths in response.")
+        stop(
+            "'color.pathway.by.objects()' ",
+            "unexpectedly matched multiple KEGG image paths in response."
+        )
     }
     sprintf("https://www.kegg.jp%s", img_url)
 

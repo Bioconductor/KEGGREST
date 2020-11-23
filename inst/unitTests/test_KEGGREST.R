@@ -1,6 +1,5 @@
 library(KEGGREST)
 library(RUnit)
-library(httr)
 
 ## checker helper
 .checkLOL <- function(res)
@@ -217,16 +216,16 @@ test_mark_and_color_pathways_by_objects  <- function(){
                                  c("eco:b0002", "eco:c00263"))
   .checkCharVec(url)
   checkTrue(grep("https://", url)==1)
-  res <- GET(url)
-  checkTrue( http_type(res) == 'image/png' )
+  res <- httr::GET(url)
+  checkTrue( httr::http_type(res) == 'image/png' )
   url <- color.pathway.by.objects("path:eco00260",
                                   c("eco:b0002", "eco:c00263"),
                                   c("#ff0000", "#00ff00"),
                                   c("#ffff00", "yellow"))
   .checkCharVec(url)
   checkTrue(grep("https://", url)==1)
-  res <- GET(url)
-  checkTrue( http_type(res) == 'image/png' )
+  res <- httr::GET(url)
+  checkTrue( httr::http_type(res) == 'image/png' )
 }
 
 
