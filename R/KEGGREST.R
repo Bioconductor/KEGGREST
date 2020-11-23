@@ -121,25 +121,63 @@ mark.pathway.by.objects <- function(pathway.id, object.id.list)
 
 ## This is not strictly speaking an API supported by the KEGG REST
 ## server, but it seems useful, and does not use SOAP, so I'm leaving it in.
-color.pathway.by.objects <- function(pathway.id, object.id.list,
-                                     fg.color.list, bg.color.list)
-{
+color.pathway.by.objects <- function(
+    pathway.id,
+    object.id.list,
+    fg.color.list,
+    bg.color.list
+) {
     ## example: http://www.kegg.jp/kegg-bin/show_pathway?eco00260/b0002%09%23ff0000,%2300ff00/c00263%09%23ffff00,yellow
     ## also works to include organism code in gene IDs
     ## (but don't include path: in pathway id)
     ## documentation here: http://www.kegg.jp/kegg/rest/weblink.html
     ## and here: http://www.kegg.jp/kegg/tool/map_pathway2.html
+
+    ## Nov 2020: refactored to use form POST due to issues with long URLs when
+    ## large identifier lists are passed.
+
     pathway.id <- sub("^path:", "", pathway.id)
     if (!(length(object.id.list)==length(fg.color.list) &&
           length(fg.color.list) == length(bg.color.list))) {
         stop(paste("object.id.list, fg.color.list, and bg.color.list must",
             "all be the same length."))
     }
-    url <- sprintf("https://www.kegg.jp/kegg-bin/show_pathway?%s/", pathway.id)
-    segs <- sprintf("%s%%09%s,%s", object.id.list,
-                    fg.color.list, bg.color.list)
-    url <- sprintf("%s%s", url, paste(segs, collapse="/"))
-    url <- .cleanUrl(url)
-    .get.tmp.url(url, use.httr=FALSE)
+
+    # format identifier/color list as expected by server
+    payload <- paste(
+        c("#ids", object.id.list),
+        c("cols", paste(bg.color.list, fg.color.list, sep=',')),
+        sep="\t",
+        collapse="\n"
+    )
+
+    # fetch KEGG page from server, via a 302 redirect handled by httr
+    # transparently
+    res <- POST(
+        url = "https://www.kegg.jp/kegg-bin/mcolor_pathway",
+        body = list(
+            map = pathway.id,
+            unclassified = payload,
+            mode = 'color'
+        ),
+        encode="multipart"
+    )
+    res <- content(res, "text")
+
+    # extract image URL from page
+    img_matches <- regexpr(
+        "(?<=<img src=\")[^\"]+",
+        res,
+        perl=T
+    )
+    img_url <- regmatches(res, img_matches)
+    if (length(img_url) < 1) {
+        stop("Failed to extract KEGG image path from response.")
+    }
+    if (length(img_url) > 1) {
+        stop("Unexpectedly matched multiple KEGG image paths in response.")
+    }
+    sprintf("https://www.kegg.jp%s", img_url)
+
 }
 

@@ -1,6 +1,6 @@
 
 importFrom(utils, download.file, head)
-importFrom(httr, GET, http_status, content, stop_for_status)
+importFrom(httr, GET, POST, http_status, content, stop_for_status)
 importFrom(png, readPNG, writePNG)
 importFrom(Biostrings, readAAStringSet, readDNAStringSet,
     DNAStringSet, AAStringSet)
