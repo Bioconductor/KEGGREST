@@ -75,7 +75,7 @@ test_listDatabases <- function()
     dbs <- listDatabases()
     for (db in dbs)
     {
-        if (all(db != c("organism", "rpair")))
+        if (all(db != c("organism", "rpair", "environ")))  # environ by vince may 5 2021
         {
             res <- keggInfo(db)
             .checkPlainText(res)
@@ -131,7 +131,7 @@ test_keggGet_2 <- function()
     .checkLOL(res)
     res <- keggGet("path:map00010")
     res <- res[[1]]
-    .checkNamedCharVec(res$DISEASE)
+#    .checkNamedCharVec(res$DISEASE)
     res <- keggGet("md:M00001")
     .checkNamedCharVec(res[[1]]$REACTION)
     .checkNamedCharVec(res[[1]]$ORTHOLOGY)
@@ -142,8 +142,19 @@ test_keggGet_2 <- function()
     x <- res[[1]]$PRODUCT
     checkTrue(all(names(x) == c("PRODUCT","GENERIC")))
     checkTrue(grepl("^ ", res[[1]]$BRITE[2]))
-    res <- keggGet("ev:E00001")
-    .checkCharVec(res[[1]]$CATEGORY)
+#    res <- keggGet("ev:E00001")
+#[1] "http://rest.kegg.jp/get/ev:E00001"
+#Browse[1]> zz = GET(url)
+#Browse[1]> httr::content(zz)
+#NULL
+#Browse[1]> zz
+#Response [http://rest.kegg.jp/get/ev:E00001]
+#  Date: 2021-05-05 12:33
+#  Status: 404
+#  Content-Type: text/plain
+#<EMPTY BODY>
+#
+#    .checkCharVec(res[[1]]$CATEGORY)
     res <- keggGet("ko:K00001")
     checkTrue(names(res[[1]]$ENTRY) == "KO")
     ## DBLINK parser?

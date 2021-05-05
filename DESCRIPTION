@@ -1,5 +1,5 @@
 Package: KEGGREST
-Version: 1.31.1
+Version: 1.31.2
 Title:
     Client-side REST access to the Kyoto Encyclopedia of Genes and Genomes (KEGG)
 Authors@R: c(
@@ -11,7 +11,7 @@ Authors@R: c(
     )
 Depends: R (>= 3.5.0)
 Imports: methods, httr, png, Biostrings
-Suggests: RUnit, BiocGenerics, knitr
+Suggests: RUnit, BiocGenerics, knitr, markdown
 Description:
     A package that provides a client interface to the Kyoto
     Encyclopedia of Genes and Genomes (KEGG) REST server. Based on
@@ -20,3 +20,4 @@ Description:
 License: Artistic-2.0
 VignetteBuilder: knitr
 biocViews: Annotation, Pathways, ThirdPartyClient, KEGG
+RoxygenNote: 7.1.1
