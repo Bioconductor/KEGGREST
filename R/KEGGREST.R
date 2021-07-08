@@ -66,6 +66,12 @@ keggGet <- function(dbentries,
     .getUrl(url, .flatFileParser)
 }
 
+keggGetCompounds <- function(pathway_id)
+{
+    url <- sprintf("%s/link/cpd/%s", .getRootUrl(), pathway_id)
+    .getUrl(url, .compoundParser)
+}
+
 .keggConv <- function(target, source)
 {
     query <-paste(source, collapse = "+") 

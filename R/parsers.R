@@ -315,3 +315,11 @@ flatFileRecordGen <- setRefClass("KEGGFlatFileRecord",
         }
     )
 )
+
+.compoundParser <- function(txt)
+{
+    cmptxt <- unlist(txt)
+    lines <- strsplit(cmptxt, "\n")
+    cmps <- gsub(".*cpd:", "", unlist(lines))
+    cmps
+}
