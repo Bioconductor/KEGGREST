@@ -66,7 +66,7 @@ keggGet <- function(dbentries,
     .getUrl(url, .flatFileParser)
 }
 
-keggGetCompounds <- function(pathway_id)
+keggCompounds <- function(pathway_id)
 {
     url <- sprintf("%s/link/cpd/%s", .getRootUrl(), pathway_id)
     .getUrl(url, .compoundParser)
@@ -74,7 +74,7 @@ keggGetCompounds <- function(pathway_id)
 
 .keggConv <- function(target, source)
 {
-    query <-paste(source, collapse = "+") 
+    query <-paste(source, collapse = "+")
     url <- sprintf("%s/conv/%s/%s", .getRootUrl(), target, query)
     .getUrl(url, .listParser, nameColumn = 1, valueColumn = 2)
 }
@@ -98,7 +98,7 @@ keggLink <- function(target, source)
             .getRootUrl(), target, paste(source, collapse="+"))
     .getUrl(url, .listParser, nameColumn=1, valueColumn=2)
 
-    }   
+    }
     ## FIXME?? keggLink("pathway",c("hsa:10458", "ece:Z5100"))
     ## returns a list with duplicate names
 }

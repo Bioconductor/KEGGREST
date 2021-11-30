@@ -12,7 +12,7 @@ export(
     listDatabases,
     keggFind,
     keggGet,
-    keggGetCompounds, 
+    keggCompounds,
     keggConv,
     keggLink,
     mark.pathway.by.objects,
