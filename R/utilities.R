@@ -30,7 +30,7 @@
     content <- .strip(content(response, "text"))
     if (nchar(content) == 0)
         return(character(0))
-        do.call(parser, list(content, ...))
+    do.call(parser, list(content, ...))
 }
 
 .strip <- function(str)
