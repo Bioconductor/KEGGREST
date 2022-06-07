@@ -151,7 +151,7 @@ color.pathway.by.objects <- function(pathway.id, object.id.list,
     # fetch KEGG page from server, via a 302 redirect handled by httr
     # transparently
     res <- POST(
-        url = "https://www.kegg.jp/kegg-bin/mcolor_pathway",
+        url = "https://www.kegg.jp/kegg-bin/show_pathway",
         body = list(
             map = pathway.id,
             unclassified = payload,
