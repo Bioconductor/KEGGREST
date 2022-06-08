@@ -1,7 +1,7 @@
 
 .getRootUrl <- function()
 {
-    getOption("KEGG_REST_URL", "http://rest.kegg.jp")
+    getOption("KEGG_REST_URL", "https://rest.kegg.jp")
 }
 
 .getGenomeUrl <- function()
