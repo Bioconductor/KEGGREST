@@ -154,7 +154,7 @@ color.pathway.by.objects <- function(pathway.id, object.id.list,
         url = "https://www.kegg.jp/kegg-bin/show_pathway",
         body = list(
             map = pathway.id,
-            unclassified = payload,
+            multi_query = payload,
             mode = 'color'
         ),
         encode="multipart"
