@@ -1,3 +1,10 @@
+CHANGES IN VERSION 1.42.0
+-----------------------
+
+BUG FIXES
+
+    o Update URL path in `.get.kegg.url` from `tmp` to `kegg` subfolder.
+
 CHANGES IN VERSION 1.37.0
 -----------------------
 
