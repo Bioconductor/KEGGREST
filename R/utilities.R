@@ -50,7 +50,9 @@
 
 .get.kegg.url <- function(url)
 {
-    content <- content(GET(url), type="text", encoding = "UTF-8")
+    res <- GET(url)
+    stop_for_status(res, "GET KEGG pathway URL")
+    content <- content(res, type="text", encoding = "UTF-8")
     lines <- strsplit(content, "\n", fixed=TRUE)[[1]]
     urlLine <- grep("<img src=\"/kegg", lines, value=TRUE)
     path <- strsplit(urlLine, '"', fixed=TRUE)[[1]][2]
