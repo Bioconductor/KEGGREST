@@ -32,11 +32,11 @@ color.pathway.by.objects(pathway.id, object.id.list,
   \item{fg.color.list}{\code{fg.color.list} a vector of two character
     strings to indicate the color for the text and border, respectively,
     of the objects in a pathway diagram. The strings can either be a
-    color code linke \#ff0000 or letter link yellow}
+    color code linke #ff0000 or letter link yellow}
   \item{bg.color.list}{\code{bg.color.list} a vector of character
     strings of the same length of \code{object.id.list} to indicate the
     background color of the objects in a pathway diagram. The strings
-    can either be a color code like \#ff0000 or letter like yellow}
+    can either be a color code like #ff0000 or letter like yellow}
 }
 \details{
   This function only returns the URL of the KEGG pathway diagram. Use
