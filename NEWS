@@ -1,6 +1,11 @@
 CHANGES IN VERSION 1.42.0
 -----------------------
 
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o `keggCompounds` lists compound IDs for a given pathway (@KristinaRiemer,
+    #6).
+
 BUG FIXES
 
     o Update URL path in `.get.kegg.url` from `tmp` to `kegg` subfolder.
@@ -11,13 +16,13 @@ CHANGES IN VERSION 1.37.0
 BUG CORRECTION
 
     o 1.37.1 Fixes new endpoint
-    o 1.37.2 http to https fixes windows error 
+    o 1.37.2 http to https fixes windows error
 
 CHANGES IN VERSION 1.0.0
 -----------------------
 
 SIGNIFICANT USER-VISIBLE CHANGES
-    
+
     o Package introduced.
 
 NEW FEATURES

@@ -7,10 +7,10 @@ Get list of compounds IDs for pathway
 Get list of compounds IDs for pathway.
 }
 \usage{
-keggCompounds(pathway_id)
+keggCompounds(pathwayID)
 }
 \arguments{
-  \item{target}{
+  \item{pathwayID}{
   A KEGG pathway identifier with the prefix \code{map} and 5 digit number.
 }
 
@@ -22,7 +22,7 @@ A list of KEGG compound identifiers
   \url{https://www.genome.jp/kegg/pathway.html}
 }
 \author{
-Dan Tenenbaum
+Dan Tenenbaum, Kristina Riemer
 }
 \examples{
 keggCompounds("map00361")
