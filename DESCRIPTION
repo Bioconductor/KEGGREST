@@ -1,5 +1,5 @@
 Package: KEGGREST
-Version: 1.41.1
+Version: 1.41.2
 Title:
     Client-side REST access to the Kyoto Encyclopedia of Genes and Genomes (KEGG)
 Authors@R: c(
