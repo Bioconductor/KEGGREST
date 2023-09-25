@@ -116,7 +116,7 @@ mark.pathway.by.objects <- function(pathway.id, object.id.list)
         pathway.id <- sprintf("%s+%s", pathway.id, object.id.list)
     }
     url <- sprintf("https://www.kegg.jp/pathway/%s", pathway.id)
-    .get.tmp.url(url)
+    .get.kegg.url(url)
 }
 
 ## This is not strictly speaking an API supported by the KEGG REST

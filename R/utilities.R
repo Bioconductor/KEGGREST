@@ -48,17 +48,10 @@
     gsub("^\\s+", "", str)
 }
 
-.get.tmp.url <- function(url, use.httr=TRUE)
+.get.kegg.url <- function(url)
 {
-    if (use.httr)
-    {
-        content <- content(GET(url), type="text")
-        lines <- strsplit(content, "\n", fixed=TRUE)[[1]]
-    } else { ## https://github.com/hadley/httr/issues/27
-        t <- tempfile()
-        download.file(url, t, quiet=TRUE)
-        lines <- readLines(t)
-    }
+    content <- content(GET(url), type="text", encoding = "UTF-8")
+    lines <- strsplit(content, "\n", fixed=TRUE)[[1]]
     urlLine <- grep("<img src=\"/kegg", lines, value=TRUE)
     path <- strsplit(urlLine, '"', fixed=TRUE)[[1]][2]
     sprintf("https://www.kegg.jp%s", path)
