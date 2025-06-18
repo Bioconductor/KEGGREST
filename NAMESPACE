@@ -15,7 +15,6 @@ export(
     keggCompounds,
     keggConv,
     keggLink,
-    mark.pathway.by.objects,
     color.pathway.by.objects
 )
 

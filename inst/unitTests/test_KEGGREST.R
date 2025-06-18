@@ -223,12 +223,6 @@ test_keggLink <- function()
 }
 
 test_mark_and_color_pathways_by_objects  <- function(){
-  url <- mark.pathway.by.objects("path:eco00260",
-                                 c("eco:b0002", "eco:c00263"))
-  .checkCharVec(url)
-  checkTrue(grep("https://", url)==1)
-  res <- httr::GET(url)
-  checkTrue( httr::http_type(res) == 'image/png' )
   url <- color.pathway.by.objects("path:eco00260",
                                   c("eco:b0002", "eco:c00263"),
                                   c("#ff0000", "#00ff00"),

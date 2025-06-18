@@ -112,18 +112,17 @@ listDatabases <- function()
           "dgroup", "environ", "genes", "ligand", "kegg")
 }
 
-## This is not strictly speaking an API supported by the KEGG REST
-## server, but it seems useful, and does not use SOAP, so I'm leaving it in.
+## This functionality is no longer supported by KEGG
 mark.pathway.by.objects <- function(pathway.id, object.id.list)
 {
-    ## example: http://www.kegg.jp/pathway/eco00260+b0002+c00263
-    pathway.id <- sub("^path:", "", pathway.id)
-    if (!missing(object.id.list)) {
-        object.id.list <- paste(object.id.list, collapse="+")
-        pathway.id <- sprintf("%s+%s", pathway.id, object.id.list)
-    }
-    url <- sprintf("https://www.kegg.jp/pathway/%s", pathway.id)
-    .get.kegg.url(url)
+    .Defunct(
+        "color.pathway.by.objects",
+        package = "KEGGREST",
+        msg = paste0(
+            "mark.pathway.by.objects() is no longer supported, ",
+            "use color.pathway.by.objects() instead."
+        )
+    )
 }
 
 ## This is not strictly speaking an API supported by the KEGG REST
