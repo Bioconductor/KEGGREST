@@ -1,4 +1,4 @@
-\name{mark.pathway.by.objects}
+\name{color.pathway.by.objects}
 \alias{mark.pathway.by.objects}
 \alias{color.pathway.by.objects}
 
@@ -45,6 +45,11 @@ color.pathway.by.objects(pathway.id, object.id.list,
   These functions are not part of the KEGG REST API; they are provided
   because they existed in \code{KEGGSOAP} and an alternative implementation
   was possible.
+
+  \code{mark.pathway.by.objects} is DEFUNCT. The example URL
+  \url{https://www.kegg.jp/pathway/hsa00010+5315+C00022} returns a 404 error
+  meaning that marking pathways with URL queries is no longer supported
+  by the KEGG REST API.
 }
 \value{
   This function returns a character string for the url
@@ -54,12 +59,6 @@ color.pathway.by.objects(pathway.id, object.id.list,
 
 \seealso{\code{\link{browseURL}}}
 \examples{
- url <- mark.pathway.by.objects(
-    "path:eco00260", c("eco:b0002", "eco:c00263")
-)
-if(interactive()){
-    browseURL(url)
-}
 url <- color.pathway.by.objects(
     "path:eco00260", c("eco:b0002", "eco:c00263"),
     c("#ff0000", "#00ff00"),
