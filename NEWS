@@ -1,3 +1,10 @@
+CHANGES IN VERSION 1.48.1
+-----------------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Defunct `mark.pathway.by.objects` function (no longer supported).
+
 CHANGES IN VERSION 1.46.0
 -----------------------
 
