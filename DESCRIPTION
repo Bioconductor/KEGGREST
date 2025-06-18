@@ -1,5 +1,5 @@
 Package: KEGGREST
-Version: 1.49.0
+Version: 1.49.1
 Title:
     Client-side REST access to the Kyoto Encyclopedia of Genes and Genomes (KEGG)
 Authors@R: c(
@@ -29,4 +29,4 @@ License: Artistic-2.0
 VignetteBuilder: knitr
 biocViews: Annotation, Pathways, ThirdPartyClient, KEGG
 RoxygenNote: 7.1.1
-Date: 2024-06-17
+Date: 2025-06-18
