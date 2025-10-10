@@ -18,7 +18,7 @@ keggLink(target, source)
   \code{keggList("organism")}).
 }
   \item{source}{
-  The same as \code{target}, but may also be one or more
+  The same as \code{target}, but may also be a character vector of
   KEGG identifiers.
 }
 }
