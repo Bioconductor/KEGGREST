@@ -112,19 +112,6 @@ listDatabases <- function()
           "dgroup", "environ", "genes", "ligand", "kegg")
 }
 
-## This functionality is no longer supported by KEGG
-mark.pathway.by.objects <- function(pathway.id, object.id.list)
-{
-    .Defunct(
-        "color.pathway.by.objects",
-        package = "KEGGREST",
-        msg = paste0(
-            "mark.pathway.by.objects() is no longer supported, ",
-            "use color.pathway.by.objects() instead."
-        )
-    )
-}
-
 ## This is not strictly speaking an API supported by the KEGG REST
 ## server, but it seems useful, and does not use SOAP, so I'm leaving it in.
 color.pathway.by.objects <- function(pathway.id, object.id.list,
