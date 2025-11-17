@@ -1,5 +1,4 @@
 \name{color.pathway.by.objects}
-\alias{mark.pathway.by.objects}
 \alias{color.pathway.by.objects}
 
 \title{Client-side interface to obtain an url for a KEGG pathway diagram
@@ -10,7 +9,6 @@ with a given set of genes marked}
   corresponding to the genes marked by red or specified color
 }
 \usage{
-mark.pathway.by.objects(pathway.id, object.id.list)
 color.pathway.by.objects(pathway.id, object.id.list,
                                      fg.color.list, bg.color.list)
 }
@@ -45,11 +43,6 @@ color.pathway.by.objects(pathway.id, object.id.list,
   These functions are not part of the KEGG REST API; they are provided
   because they existed in \code{KEGGSOAP} and an alternative implementation
   was possible.
-
-  \code{mark.pathway.by.objects} is DEFUNCT. The example URL
-  \url{https://www.kegg.jp/pathway/hsa00010+5315+C00022} returns a 404 error
-  meaning that marking pathways with URL queries is no longer supported
-  by the KEGG REST API.
 }
 \value{
   This function returns a character string for the url
