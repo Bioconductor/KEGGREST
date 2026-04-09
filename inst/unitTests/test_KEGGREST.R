@@ -220,6 +220,17 @@ test_keggLink <- function()
     .checkCharVec(res)
     res <- keggLink("pathway", c("hsa:10458", "ece:Z5100"))
     .checkCharVec(res)
+
+    res1 <- keggLink("pathway", "ko:K00016")
+    res2 <- keggLink("pathway", c("ko:K00016", "ko:K06756"))
+
+    checkTrue(
+        identical(
+            sort(res1),
+            res2[names(res2) == "ko:K00016"] |>
+                sort()
+        )
+    )
 }
 
 test_mark_and_color_pathways_by_objects  <- function(){
