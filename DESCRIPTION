@@ -14,7 +14,7 @@ Authors@R: c(
     person("Jeremy", "Volkening", role = "ctb")
     )
 Depends: R (>= 3.5.0)
-Imports: methods, httr, png, Biostrings
+Imports: methods, httr, png, Biostrings, readr
 Suggests: RUnit, BiocGenerics, BiocStyle, knitr, markdown
 Description:
     A package that provides a client interface to the Kyoto

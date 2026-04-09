@@ -97,7 +97,7 @@ keggLink <- function(target, source)
     } else {
         url <- sprintf("%s/link/%s/%s",
             .getRootUrl(), target, paste(source, collapse="+"))
-    .getUrl(url, .listParser, nameColumn=1, valueColumn=2)
+    .getURLtsv(url, .listParser, nameColumn=1, valueColumn=2)
 
     }
     ## FIXME?? keggLink("pathway",c("hsa:10458", "ece:Z5100"))

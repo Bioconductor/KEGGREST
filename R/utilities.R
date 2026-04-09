@@ -19,6 +19,15 @@
      sub("http(s)*%3a//", "http\\1://", url)
 }
 
+.getURLtsv <- function(url, parser, ...) {
+    url <- .cleanUrl(url)
+    tmp <- tempfile(fileext = ".tsv")
+    response <- GET(url, write_disk(tmp))
+    stop_for_status(response)
+    res <- readr::read_tsv(tmp, col_names = FALSE, show_col_types = FALSE)
+    structure(res[[2L]], .Names = res[[1L]])
+}
+
 .getUrl <- function(url, parser, ...)
 {
     url <- .cleanUrl(url)
