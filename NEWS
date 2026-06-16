@@ -10,6 +10,8 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
 BUG FIXES AND MINOR IMPROVEMENTS
 
+    o Updated `color.pathway.by.objects` to align with the new KEGG Map Coloring
+    web application specifications, using space-separated multi-query format.
     o Added unit tests and examples for querying the KEGG Orthology database
     e.g., `keggLink("ko", "sce")` (@assaron, #38)
 
