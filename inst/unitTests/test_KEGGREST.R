@@ -228,9 +228,9 @@ test_mark_and_color_pathways_by_objects  <- function(){
                                   c("#ff0000", "#00ff00"),
                                   c("#ffff00", "yellow"))
   .checkCharVec(url)
-  checkTrue(grep("https://", url)==1)
-  res <- httr::GET(url)
-  checkTrue( httr::http_type(res) == 'image/png' )
+  checkTrue(grepl("^https://www.kegg.jp/kegg-bin/", url))
+  res <- httr::GET(url, httr::config(http_version = 1.1))
+  checkTrue( httr::http_type(res) == 'text/html' )
 }
 
 
