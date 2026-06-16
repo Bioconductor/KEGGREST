@@ -25,7 +25,7 @@ Dan Tenenbaum
 }
 \examples{
 listDatabases()
-res <- keggList("organism") ## list all organisms
+res <- keggList("genome") ## list all organisms
 nrow(res)
 head(res)
 res <- keggList("hsa") ## list all human genes

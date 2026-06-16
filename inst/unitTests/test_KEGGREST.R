@@ -50,9 +50,9 @@ test_keggList <- function()
     .checkCharVec(res)
     res <- keggList("pathway", "hsa")
     .checkCharVec(res)
-    res <- keggList("organism")
+    res <- keggList("genome")
     checkTrue("matrix" %in% class(res))
-    checkTrue("hsa" %in% res[, "organism"])
+    checkTrue("hsa" %in% res[, "genome"])
     res <- keggList("hsa")
     .checkCharVec(res)
     res <- keggList("T01001")
@@ -70,19 +70,14 @@ test_keggList <- function()
 ## make them mad. Instead we hit /info. KEGG does not like
 ## /info/organism for some reason so we will test /list/organism.
 ## NOTE: rpair (RP ids) was discontinued in 2016.
+## NOTE: environ returns bad request 400 error; removed test
+## NOTE: organism is discontinued in 2026; test for "genome" instead.
 test_listDatabases <- function()
 {
     dbs <- listDatabases()
-    for (db in dbs)
-    {
-        if (all(db != c("organism", "rpair", "environ")))  # environ by vince may 5 2021
-        {
-            res <- keggInfo(db)
-            .checkPlainText(res)
-        }
-    }
-    res <- keggList("organism")
-    checkTrue("matrix" %in% class(res))
+    checkTrue("genome" %in% dbs)
+    res <- keggInfo("genome")
+    .checkPlainText(res)
 }
 
 

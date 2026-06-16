@@ -15,6 +15,8 @@ keggList <- function(database, organism)
         url <- sprintf("%s/list/%s/%s", .getRootUrl(), database, organism)
     if (database == "organism")
         return(.organismListParser(url))
+    else if (identical(database, "genome"))
+        return(.genomeListParser(url))
     .getUrl(url, .listParser, nameColumn=1, valueColumn=2)
 }
 

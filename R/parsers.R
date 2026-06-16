@@ -7,6 +7,14 @@
     matrix(u, ncol=ncol, byrow=TRUE)
 }
 
+.genomeListParser <- function(url)
+{
+    lines <- readLines(url, warn = FALSE)
+    split_tab <- strsplit(lines, "\t|;\\s+")
+    m <- do.call(rbind, split_tab)
+    colnames(m) <- c("T.number", "genome", "organism")
+    m
+}
 
 .organismListParser <- function(url)
 {
