@@ -3,8 +3,15 @@ CHANGES IN VERSION 1.52.0
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
+    o The "organism" KEGG endpoint has stopped working due to upstream changes,
+    the "genome" endpoint can be used instead with `keggList("genome")`
+    (@assaron, #30)
     o The `mark.pathway.by.objects` function has been removed.
 
+BUG FIXES AND MINOR IMPROVEMENTS
+
+    o Added unit tests and examples for querying the KEGG Orthology database
+    e.g., `keggLink("ko", "sce")` (@assaron, #38)
 
 CHANGES IN VERSION 1.48.1
 -----------------------
