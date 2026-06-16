@@ -127,6 +127,11 @@ test_keggGet_2 <- function()
     res <- keggGet("path:map00010")
     res <- res[[1]]
 #    .checkNamedCharVec(res$DISEASE)
+    ## orthology checks
+    res <- keggGet("mmu:100009600")
+    .checkNamedCharVec(res[[1L]]$ORTHOLOGY)
+    res <- keggGet("ko:K00001")
+    .checkNamedCharVec(res[[1]]$REACTION)
     res <- keggGet("md:M00001")
     .checkNamedCharVec(res[[1]]$REACTION)
     .checkNamedCharVec(res[[1]]$ORTHOLOGY)

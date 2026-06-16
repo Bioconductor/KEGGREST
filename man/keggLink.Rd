@@ -52,5 +52,9 @@ keggLink("pathway", c("hsa:10458", "ece:Z5100")) ## KEGG pathways
 res <- keggLink("hsa:126") ## LinkDB search shows all KEGG
           ## resources related to hsa:126
 head(res)
+
+## query orthology database for saccharomyces cerevisiae
+res <- keggLink("ko", "sce")
+head(res)
 }
 \keyword{ link }
