@@ -119,14 +119,10 @@ listDatabases <- function()
 color.pathway.by.objects <- function(pathway.id, object.id.list,
     fg.color.list, bg.color.list)
 {
-    ## example: http://www.kegg.jp/kegg-bin/show_pathway?eco00260/b0002%09%23ff0000,%2300ff00/c00263%09%23ffff00,yellow
+    ## example: https://www.kegg.jp/kegg-bin/show_pathway?eco00260/b0002%09%23ff0000,%2300ff00/c00263%09%23ffff00,yellow
     ## also works to include organism code in gene IDs
     ## (but don't include path: in pathway id)
-    ## documentation here: http://www.kegg.jp/kegg/rest/weblink.html
-    ## and here: http://www.kegg.jp/kegg/tool/map_pathway2.html
-
-    ## Nov 2020: refactored to use form POST due to issues with long URLs when
-    ## large identifier lists are passed.
+    ## documentation here: https://www.kegg.jp/kegg/webapp/color_url.html
 
     pathway.id <- sub("^path:", "", pathway.id)
     if (!(length(object.id.list)==length(fg.color.list) &&
@@ -136,46 +132,21 @@ color.pathway.by.objects <- function(pathway.id, object.id.list,
     }
 
     # format identifier/color list as expected by server
+    # according to https://www.kegg.jp/kegg/webapp/color_url.html
     payload <- paste(
-        c("#ids", object.id.list),
-        c("cols", paste(bg.color.list, fg.color.list, sep=',')),
-        sep="\t",
+        object.id.list,
+        paste(bg.color.list, fg.color.list, sep=','),
+        sep=" ",
         collapse="\n"
     )
 
-    # fetch KEGG page from server, via a 302 redirect handled by httr
-    # transparently
-    res <- POST(
-        url = "https://www.kegg.jp/kegg-bin/show_pathway",
-        body = list(
-            map = pathway.id,
-            multi_query = payload,
-            mode = 'color'
-        ),
-        encode="multipart"
+    # Return the URL of the KEGG pathway diagram page where client-side
+    # coloring is rendered by the browser
+    paste0(
+        "https://www.kegg.jp/kegg-bin/show_pathway?map=",
+        pathway.id,
+        "&multi_query=",
+        utils::URLencode(payload, reserved = TRUE)
     )
-    res <- content(res, "text")
-
-    # extract image URL from page
-    img_matches <- regexpr(
-        "(?<=<img src=\")[^\"]+",
-        res,
-        perl=T
-    )
-    img_url <- regmatches(res, img_matches)
-    if (length(img_url) < 1) {
-        stop(
-            "'color.pathway.by.objects()' ",
-            "failed to extract KEGG image path from response."
-        )
-    }
-    if (length(img_url) > 1) {
-        stop(
-            "'color.pathway.by.objects()' ",
-            "unexpectedly matched multiple KEGG image paths in response."
-        )
-    }
-    sprintf("https://www.kegg.jp%s", img_url)
-
 }
 
