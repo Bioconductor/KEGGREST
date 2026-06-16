@@ -15,7 +15,7 @@ keggLink(target, source)
   Either the name of a single KEGG database (list available via
   \code{\link{listDatabases}()}, a "T number" genome identifier,
   or a KEGG organism code (lists of both available via
-  \code{keggList("organism")}).
+  \code{keggList("genome")}).
 }
   \item{source}{
   The same as \code{target}, but may also be a character vector of

@@ -17,7 +17,7 @@ keggFind(database, query, option = c("formula", "exact_mass",
   Either the name of a single KEGG database (list available via
   \code{\link{listDatabases}()}, a "T number" genome identifier,
   or a KEGG organism code (lists of both available via
-  \code{keggList("organism")}).
+  \code{keggList("genome")}).
 }
   \item{query}{
   One or more keywords, or a range of integers representing 

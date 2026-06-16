@@ -44,7 +44,7 @@ head(res)
 res <- keggList("pathway", "hsa") ## returns the list of human pathways
 length(res)
 head(res)
-res <- keggList("organism") ## returns the list of KEGG organisms with
+res <- keggList("genome") ## returns the list of KEGG organisms with
                      ## taxonomic classification
 nrow(res)
 head(res)

@@ -92,12 +92,12 @@ You can obtain the list of organisms available in KEGG with
 the `keggList()` function:
 
 ```{r get_organisms}
-org <- keggList("organism")
+org <- keggList("genome")
 head(org)
 ```
 
 From `KEGGREST`'s point of view, you've just asked KEGG
-to show you the name of every entry in the "organism" database.
+to show you the name of every entry in the "genome" database.
 
 Therefore, the complete list of entities that can be
 queried with `KEGGREST` can be obtained as follows:
