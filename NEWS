@@ -1,3 +1,18 @@
+CHANGES IN VERSION 1.53.2
+-----------------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o The "organism" KEGG endpoint has stopped working due to upstream changes,
+    the "genome" endpoint can be used instead with `keggList("genome")`
+    (@assaron, #30)
+
+BUG FIXES AND MINOR IMPROVEMENTS
+
+    o Added unit tests and examples for querying the KEGG Orthology database
+    e.g., `keggLink("ko", "sce")` (@assaron, #38)
+
+
 CHANGES IN VERSION 1.52.0
 -----------------------
 
