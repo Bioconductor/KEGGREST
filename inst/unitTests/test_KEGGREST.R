@@ -229,7 +229,7 @@ test_mark_and_color_pathways_by_objects  <- function(){
                                   c("#ffff00", "yellow"))
   .checkCharVec(url)
   checkTrue(grepl("^https://www.kegg.jp/kegg-bin/", url))
-  res <- httr::GET(url, httr::config(http_version = 1.1))
+  res <- httr::GET(url)
   out <- try(
     stop_for_status(res, "GET KEGG pathway URL"),
     silent = TRUE
