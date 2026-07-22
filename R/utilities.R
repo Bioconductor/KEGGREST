@@ -6,7 +6,7 @@
 
 .getGenomeUrl <- function()
 {
-    getOption("KEGG_GENOME_URL", "http://rest.genome.jp")
+    getOption("KEGG_GENOME_URL", "https://rest.genome.jp")
 }
 
 .printf <- function(...) message(noquote(sprintf(...)))
