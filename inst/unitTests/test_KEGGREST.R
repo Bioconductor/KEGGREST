@@ -2,50 +2,42 @@ library(KEGGREST)
 library(RUnit)
 
 ## checker helper
-.checkLOL <- function(res)
-{
-    all(checkTrue(class(res)=="list"),
-        checkTrue(class(res[[1]])=="list"),
-        checkTrue(length(res) > 0))
+.checkLOL <- function(res) {
+    all(
+        checkTrue(class(res) == "list"),
+        checkTrue(class(res[[1]]) == "list"),
+        checkTrue(length(res) > 0)
+    )
 }
 
-.checkCharVec <- function(res)
-{
-    all(checkTrue(class(res)=="character"),
-        checkTrue(length(res) > 0))
+.checkCharVec <- function(res) {
+    all(checkTrue(class(res) == "character"), checkTrue(length(res) > 0))
 }
 
-.checkPlainText <- function(res)
-{
-    all(checkTrue(class(res)=="character"),
-        checkTrue(length(res) == 1))
+.checkPlainText <- function(res) {
+    all(checkTrue(class(res) == "character"), checkTrue(length(res) == 1))
 }
 
-.checkNamedCharVec <- function(res)
-{
+.checkNamedCharVec <- function(res) {
     .checkCharVec(res) &&
         checkTrue(length(names(res)) > 0)
 }
 
-.checkUnnamedCharVec <- function(res)
-{
+.checkUnnamedCharVec <- function(res) {
     .checkCharVec(res) &&
         is.null(names(res))
 }
 
-test_keggInfo <- function()
-{
+test_keggInfo <- function() {
     res <- keggInfo("kegg")
     .checkPlainText(res)
     res <- keggInfo("pathway")
     .checkPlainText(res)
     res <- keggInfo("hsa")
     .checkPlainText(res)
-
 }
 
-test_keggList <- function()
-{
+test_keggList <- function() {
     res <- keggList("pathway")
     .checkCharVec(res)
     res <- keggList("pathway", "hsa")
@@ -59,7 +51,7 @@ test_keggList <- function()
     .checkCharVec(res)
     res <- keggList(c("hsa:10458", "ece:Z5100"))
     .checkCharVec(res)
-    res <- keggList(c("cpd:C01290","gl:G00092"))
+    res <- keggList(c("cpd:C01290", "gl:G00092"))
     .checkCharVec(res)
     res <- keggList(c("C01290+G00092"))
     .checkCharVec(res)
@@ -72,8 +64,7 @@ test_keggList <- function()
 ## NOTE: rpair (RP ids) was discontinued in 2016.
 ## NOTE: environ returns bad request 400 error; removed test
 ## NOTE: organism is discontinued in 2026; test for "genome" instead.
-test_listDatabases <- function()
-{
+test_listDatabases <- function() {
     dbs <- listDatabases()
     checkTrue("genome" %in% dbs)
     res <- keggInfo("genome")
@@ -81,8 +72,7 @@ test_listDatabases <- function()
 }
 
 
-test_keggFind <- function()
-{
+test_keggFind <- function() {
     res <- keggFind("genes", c("shiga", "toxin"))
     .checkCharVec(res)
     res <- keggFind("genes", "shiga toxin")
@@ -97,8 +87,7 @@ test_keggFind <- function()
     .checkCharVec(res)
 }
 
-test_keggGet <- function()
-{
+test_keggGet <- function() {
     res <- keggGet(c("cpd:C01290", "gl:G00092"))
     .checkLOL(res)
     res <- keggGet(c("C01290", "G00092"))
@@ -116,8 +105,7 @@ test_keggGet <- function()
     checkTrue("array" %in% class(png))
 }
 
-test_keggGet_2 <- function()
-{
+test_keggGet_2 <- function() {
     res <- keggGet("br:br08901")
     .checkCharVec(res)
     res <- keggGet(c("br:br08901", "ece:Z5100"))
@@ -126,7 +114,7 @@ test_keggGet_2 <- function()
     .checkLOL(res)
     res <- keggGet("path:map00010")
     res <- res[[1]]
-#    .checkNamedCharVec(res$DISEASE)
+    #    .checkNamedCharVec(res$DISEASE)
     ## orthology checks
     res <- keggGet("mmu:100009600")
     .checkNamedCharVec(res[[1L]]$ORTHOLOGY)
@@ -140,21 +128,21 @@ test_keggGet_2 <- function()
     .checkUnnamedCharVec(res[[1]]$GENE)
     res <- keggGet("dr:D00001")
     x <- res[[1]]$PRODUCT
-    checkTrue(all(names(x) == c("PRODUCT","GENERIC")))
+    checkTrue(all(names(x) == c("PRODUCT", "GENERIC")))
     checkTrue(grepl("^ ", res[[1]]$BRITE[2]))
-#    res <- keggGet("ev:E00001")
-#[1] "http://rest.kegg.jp/get/ev:E00001"
-#Browse[1]> zz = GET(url)
-#Browse[1]> httr::content(zz)
-#NULL
-#Browse[1]> zz
-#Response [http://rest.kegg.jp/get/ev:E00001]
-#  Date: 2021-05-05 12:33
-#  Status: 404
-#  Content-Type: text/plain
-#<EMPTY BODY>
-#
-#    .checkCharVec(res[[1]]$CATEGORY)
+    #    res <- keggGet("ev:E00001")
+    #[1] "http://rest.kegg.jp/get/ev:E00001"
+    #Browse[1]> zz = GET(url)
+    #Browse[1]> httr::content(zz)
+    #NULL
+    #Browse[1]> zz
+    #Response [http://rest.kegg.jp/get/ev:E00001]
+    #  Date: 2021-05-05 12:33
+    #  Status: 404
+    #  Content-Type: text/plain
+    #<EMPTY BODY>
+    #
+    #    .checkCharVec(res[[1]]$CATEGORY)
     res <- keggGet("ko:K00001")
     checkTrue(names(res[[1]]$ENTRY) == "KO")
     ## DBLINK parser?
@@ -171,9 +159,9 @@ test_keggGet_2 <- function()
     .checkNamedCharVec(res[[1]]$ORGANISM)
     ## IS DNAStringSet the best object for a nucleotide sequence? fixme
     checkTrue(class(res[[1]]$NTSEQ) %in% "DNAStringSet")
-    res <-keggGet("cpd:C00001")
+    res <- keggGet("cpd:C00001")
     .checkUnnamedCharVec(res[[1]]$REACTION)
-    checkTrue(length(res[[1]]$REACTION)> 300)
+    checkTrue(length(res[[1]]$REACTION) > 300)
     res <- keggGet("gl:G00001")
     checkTrue("COMPOSITION" %in% names(res[[1]]))
     res <- keggGet("rn:R00001")
@@ -189,12 +177,9 @@ test_keggGet_2 <- function()
     checkTrue("AAStringSet" %in% class(res[[1]]$AASEQ))
     checkTrue("DNAStringSet" %in% class(res[[1]]$NTSEQ))
     # fixme do something with CODON_USAGE?
-
-
 }
 
-test_splitInGroups <- function()
-{
+test_splitInGroups <- function() {
     .splitInGroups <- KEGGREST:::.splitInGroups
     checkIdentical(.splitInGroups(character(), 3), list())
     checkIdentical(.splitInGroups(1:5, 3), list(1:3, 4:5))
@@ -202,8 +187,7 @@ test_splitInGroups <- function()
     checkIdentical(.splitInGroups(1:7, 3), list(1:3, 4:6, 7L))
 }
 
-test_keggConv <- function()
-{
+test_keggConv <- function() {
     res <- keggConv("eco", "ncbi-geneid")
     .checkCharVec(res)
     res <- keggConv("ncbi-geneid", "eco")
@@ -212,8 +196,7 @@ test_keggConv <- function()
     .checkCharVec(res)
 }
 
-test_keggLink <- function()
-{
+test_keggLink <- function() {
     res <- keggLink("pathway", "hsa")
     .checkCharVec(res)
     res <- keggLink("hsa", "pathway")
@@ -222,25 +205,27 @@ test_keggLink <- function()
     .checkCharVec(res)
 }
 
-test_mark_and_color_pathways_by_objects  <- function(){
-  url <- color.pathway.by.objects("path:eco00260",
-                                  c("eco:b0002", "eco:c00263"),
-                                  c("#ff0000", "#00ff00"),
-                                  c("#ffff00", "yellow"))
-  .checkCharVec(url)
-  checkTrue(grepl("^https://www.kegg.jp/kegg-bin/", url))
-  res <- httr::GET(url)
-  out <- try(
-    stop_for_status(res, "GET KEGG pathway URL"),
-    silent = TRUE
-  )
-  if (!inherits(out, "try-error"))
-    checkIdentical(httr::http_type(res), "text/html")
+test_mark_and_color_pathways_by_objects <- function() {
+    url <- color.pathway.by.objects(
+        "path:eco00260",
+        c("eco:b0002", "eco:c00263"),
+        c("#ff0000", "#00ff00"),
+        c("#ffff00", "yellow")
+    )
+    .checkCharVec(url)
+    checkTrue(grepl("^https://www.kegg.jp/kegg-bin/", url))
+    res <- httr::GET(url)
+    out <- try(
+        stop_for_status(res, "GET KEGG pathway URL"),
+        silent = TRUE
+    )
+    if (!inherits(out, "try-error")) {
+        checkIdentical(httr::http_type(res), "text/html")
+    }
 }
 
 
-test_reference_parser <- function()
-{
+test_reference_parser <- function() {
     res <- keggGet("path:map00010")[[1]]
     refs <- res$REFERENCE[[1]]
     checkTrue(length(refs) > 0)
@@ -267,4 +252,3 @@ test_keggCompounds <- function() {
         )
     )
 }
-
